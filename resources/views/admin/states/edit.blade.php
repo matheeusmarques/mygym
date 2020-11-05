@@ -17,7 +17,7 @@
           </div>
           <div class="form-group mb-4">
             <label for="formGroupExampleInput">Sigla</label>
-            <input type="text" class="form-control" name="acronym" id="acronym" placeholder="Sigla">
+            <input type="text" class="form-control" name="acronym" maxlength="2" id="acronym" placeholder="Sigla">
           </div>
         </div>
         <div class="modal-footer">
