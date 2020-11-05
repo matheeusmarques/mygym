@@ -18,7 +18,7 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::guard($guard)->check() && Auth::user()->role == 1) {
+        if (Auth::guard($guard)->check() && Auth::user()->role == 3) {
             return redirect('/painel/admin/home');
         }
 

@@ -2645,23 +2645,13 @@
                                       <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
                                       @break
 
-                                      @case('clients-packages')
-                                      @include('admin.packages.edit_clients')
-                                      @include('admin.packages.create_clients')
-                                      @include('admin.packages.delete_clients')
+                                      @case('states')
+                                      @include('admin.states.edit')
+                                      @include('admin.states.delete')
+                                      @include('admin.states.create')
                                       {{-- Table Datatable Basic Light --}}
                                       <script src="{{asset('plugins/table/datatable/datatables.js')}}"></script>
                                       <script>
-                                      $('#modal-new-package').on('show.bs.modal', function (event) {
-                                        $("#bouquets div").remove(); // Remove all <option> child tags.
-                                        console.log('teste');
-                                        // event.preventDefault();
-                                        $.getJSON("{{url('api/get_bouquets')}}", null, function(data) {
-                                          $.each(data.bouquets, function(index, item) { // Iterates through a collection
-                                            $("#bouquets").append('<div class="n-chk"><label class="new-control new-checkbox checkbox-primary"><input id="'+item.id+'" name="bouquets_id[]" value="'+item.id+'" type="checkbox" class="new-control-input" checked><span class="new-control-indicator"></span>'+item.bouquet_name+'</label></div>');
-                                          });
-                                        });
-                                      });
                                       $('#zero-config').DataTable({
                                         oLanguage: {
                                           oPaginate: { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
@@ -2679,7 +2669,7 @@
                                         serverSide: true,
                                         order: [[ 0, "desc" ]],
                                         ajax:{
-                                          url:  "{{ url('/api/pacotes/clientes/getdata') }}",
+                                          url:  "{{ url('/api/states/getdata') }}",
                                         },
                                         columns:[
                                           {
@@ -2691,16 +2681,8 @@
                                             name: 'name'
                                           },
                                           {
-                                            data: 'description',
-                                            name: 'description'
-                                          },
-                                          {
-                                            data: 'price',
-                                            name: 'price'
-                                          },
-                                          {
-                                            data: 'status',
-                                            name: 'status'
+                                            data: 'acronym',
+                                            name: 'acronym'
                                           },
                                           {
                                             data: 'action',
@@ -2709,31 +2691,24 @@
                                         ]
                                       });
 
-                                      $('#modal-edit-package').on('show.bs.modal', function (event) {
-                                        $('#form-edit-package')[0].reset();
-                                        $('#status').prop('selectedIndex',0);
+                                      $('#modal-edit-state').on('show.bs.modal', function (event) {
+                                        $('#form-edit-state')[0].reset();
                                         var button = $(event.relatedTarget);
                                         var id = button.data('id');
                                         var name = button.data('name');
-                                        var description = button.data('description');
-                                        var price = button.data('price');
-                                        var quantity = button.data('quantity');
-                                        var status = button.data('status');
+                                        var acronym = button.data('acronym');
 
                                         var modal = $(this);
                                         modal.find('[value="0"]').attr('selected', false);
                                         modal.find('[value="1"]').attr('selected', false);
                                         modal.find('#id').attr('value', id);
                                         modal.find('#name').attr('value', name);
-                                        modal.find('#description').attr('value', description);
-                                        modal.find('#price').attr('value', price);
-                                        modal.find('#quantity').attr('value', quantity);
-                                        modal.find('[value="'+status+'"]').attr('selected', true);
+                                        modal.find('#acronym').attr('value', acronym);
                                       });
 
 
-                                      $('#modal-delete-package').on('show.bs.modal', function (event) {
-                                        $('#form-delete-package')[0].reset();
+                                      $('#modal-delete-state').on('show.bs.modal', function (event) {
+                                        $('#form-delete-state')[0].reset();
                                         var button = $(event.relatedTarget);
                                         var id = button.data('id');
                                         var name = button.data('name');
@@ -2741,21 +2716,21 @@
 
                                         var modal = $(this);
                                         modal.find('#id').attr('value', id);
-                                        modal.find('#name').attr('value', name);
+                                        modal.find('#name').text(name);
                                       });
 
-                                      $("#form-edit-package").submit(function(event) {
+                                      $("#form-edit-state").submit(function(event) {
                                         event.preventDefault();
                                         $.ajax(
                                           {
                                             type: 'POST',
-                                            url:  "{{ url('api/pacotes/clientes/editar') }}",
-                                            data: $('#form-edit-package').serialize(),
+                                            url:  "{{ url('api/states/edit') }}",
+                                            data: $('#form-edit-state').serialize(),
                                             success: function(response)
                                             {
-                                              $('#modal-edit-package').modal('toggle');
+                                              $('#modal-edit-state').modal('toggle');
                                               if(response.status == 200){
-                                                $('#form-edit-package')[0].reset();
+                                                $('#form-edit-state')[0].reset();
                                                 $('#zero-config').DataTable().ajax.reload();
                                                 swal({
                                                   title: 'OK!',
@@ -2785,18 +2760,18 @@
 
                                         });
 
-                                        $("#form-new-package").submit(function(event) {
+                                        $("#form-new-state").submit(function(event) {
                                           event.preventDefault();
                                           $.ajax(
                                             {
                                               type: 'POST',
-                                              url:  "{{ url('api/pacotes/clientes/novo') }}",
-                                              data: $('#form-new-package').serialize(),
+                                              url:  "{{ url('api/states/new') }}",
+                                              data: $('#form-new-state').serialize(),
                                               success: function(response)
                                               {
-                                                $('#modal-new-package').modal('toggle');
+                                                $('#modal-new-state').modal('toggle');
                                                 if(response.status == 200){
-                                                  $('#form-new-package')[0].reset();
+                                                  $('#form-new-state')[0].reset();
                                                   $('#zero-config').DataTable().ajax.reload();
                                                   swal({
                                                     title: 'OK!',
@@ -2826,18 +2801,18 @@
 
                                           });
 
-                                          $("#form-delete-package").submit(function(event) {
+                                          $("#form-delete-state").submit(function(event) {
                                             event.preventDefault();
                                             $.ajax(
                                               {
                                                 type: 'POST',
-                                                url:  "{{ url('api/pacotes/clientes/deletar') }}",
-                                                data: $('#form-delete-package').serialize(),
+                                                url:  "{{ url('api/states/delete') }}",
+                                                data: $('#form-delete-state').serialize(),
                                                 success: function(response)
                                                 {
-                                                  $('#modal-delete-package').modal('toggle');
+                                                  $('#modal-delete-state').modal('toggle');
                                                   if(response.status == 200){
-                                                    $('#form-delete-package')[0].reset();
+                                                    $('#form-delete-state')[0].reset();
                                                     $('#zero-config').DataTable().ajax.reload();
                                                     swal({
                                                       title: 'OK!',

@@ -47,6 +47,21 @@ Route::group( ['middleware' => ['auth', 'admin']], function(){
 
     Route::get('/home', 'HomeController@index');
 
+    Route::get('/estados', function() {
+      // $category_name = '';
+      $data = [
+        'category_name' => 'geo',
+        'page_name' => 'states',
+        'username' => Auth::user()->name,
+        'role' => Auth::user()->role,
+        'has_scrollspy' => 0,
+        'scrollspy_offset' => '',
+        'alt_menu' => 0,
+      ];
+      // $pageName = 'analytics';
+      return view('admin/states/index')->with($data);
+    });
+
 
     Route::get('/clientes/todos', function() {
       // $category_name = '';
@@ -246,6 +261,13 @@ Route::group( ['middleware' => ['auth', 'admin']], function(){
   Route::namespace('Admin')->prefix('api/')->as('admin.')->middleware('auth')->group(function(){
     Route::get('/get_bouquets', 'APIController@get_bouquets');
     Route::get('/get_servers', 'APIController@get_servers');
+
+    Route::get('/states/getdata', 'StateController@get_data');
+
+    Route::post('/states/edit', 'StateController@edit');
+    Route::post('/states/delete', 'StateController@delete');
+    Route::post('/states/new', 'StateController@store');
+
 
     Route::post('/usuario/novo', 'UserController@store');
 

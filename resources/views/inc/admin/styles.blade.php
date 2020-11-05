@@ -916,7 +916,7 @@
     <link href="{{asset('assets/css/components/custom-modal.css')}}" rel="stylesheet" type="text/css" />
     @break
 
-    @case('clients-packages')
+    @case('states')
     {{-- Table Datatable Basic Light --}}
     {{-- Table Datatable Basic --}}
     <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">

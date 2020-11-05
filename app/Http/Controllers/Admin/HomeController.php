@@ -38,11 +38,6 @@ class HomeController extends Controller
       'has_scrollspy' => 0,
       'scrollspy_offset' => '',
       'alt_menu' => 0,
-      'last_invoices' => Invoices::latest()->take(5)->get(),
-      'last_customers' => User::latest()->take(5)->get(),
-      'total_customers' => User::count(),
-      'total_trial' => User::where('is_trial', '1')->count(),
-      'active_customers' => User::all()->where('package_valid_until', '>', Carbon::today()->toDateString())->count(),
     ];
 
     // $arr['total_customers'] = User::count();

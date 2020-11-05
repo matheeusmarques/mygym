@@ -24,7 +24,7 @@ class LoginController extends Controller
   use AuthenticatesUsers;
   protected function authenticated(Request $request, $user)
   {
-    if ( $user->role == '1' ) {// do your margic here
+    if ( $user->role == '3' ) {// do your margic here
       return redirect('/painel/admin/home');
     }elseif($user->role == '0'){
       return redirect('/painel/home');

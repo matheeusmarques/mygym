@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app_admin')
 
 @section('content')
 
@@ -12,7 +12,7 @@
           <div class="widget-content">
             <div class="w-content">
               <div class="w-info">
-                <h6 class="value">{{$total_customers}}</h6>
+                <h6 class="value">3000</h6>
                 <p class="">Total de Clientes</p>
               </div>
               <div class="">
@@ -29,7 +29,7 @@
             <div class="widget-content">
               <div class="w-content">
                 <div class="w-info">
-                  <h6 class="value">{{$active_customers}}</h6>
+                  <h6 class="value">1000</h6>
                   <p class="">Clientes Ativos</p>
                 </div>
                 <div class="">
@@ -46,8 +46,8 @@
               <div class="widget-content">
                 <div class="w-content">
                   <div class="w-info">
-                    <h6 class="value">{{$total_trial}}</h6>
-                    <p class="">Total de Testes</p>
+                    <h6 class="value">2000</h6>
+                    <p class="">Clientes Inativos</p>
                   </div>
                   <div class="">
                     <div class="w-icon">
@@ -107,13 +107,13 @@
                         </tr>
                       </thead>
                       <tbody>
-                        @foreach ($last_customers as $c)
+                        {{-- @foreach ($last_customers as $c)
                           <tr>
                             <td><div class="td-content customer-name"><img src="{{asset('storage/img/90x90.jpg')}}" alt="avatar">{{$c->name}}</div></td>
                             <td><div class="td-content product-brand">{{$c->email}}</div></td>
                             <td><div class="td-content product-brand">{{$c->created_at}}</div></td>
                           </tr>
-                        @endforeach
+                        @endforeach --}}
                       </tbody>
                     </table>
                   </div>
@@ -140,7 +140,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        @foreach ($last_invoices as $i)
+                        {{-- @foreach ($last_invoices as $i)
                             <tr>
                               @if ($i->method == 'MercadoPago')
                                 <td><div class="td-content product-name"><img src="{{asset('https://i.imgur.com/LYvA2Mx.png')}}" alt="product">MercadoPago</div></td>
@@ -159,7 +159,7 @@
                                 <td><div class="td-content"><span class="badge badge-danger">Cancelado</span></div></td>
                               @endif
                             </tr>
-                        @endforeach
+                        @endforeach --}}
                       </tbody>
                     </table>
                   </div>

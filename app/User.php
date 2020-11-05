@@ -16,8 +16,9 @@ class User extends Authenticatable
   * @var array
   */
   protected $fillable = [
-    'name', 'email', 'password', 'role', 'cellphone', 'package_id',
-    'package_valid_until', 'created_by'
+    'name', 'email', 'password', 'role', 'cellphone',
+    'package_id', 'city_id', 'gender', 'cpf', 'birthday'
+    , 'status'
   ];
 
   /**
@@ -38,37 +39,14 @@ class User extends Authenticatable
     'email_verified_at' => 'datetime',
   ];
 
-  public function package()
+  // public function package()
+  // {
+  //   return $this->belongsTo(Packages::class);
+  // }
+
+  public function city()
   {
-    return $this->belongsTo(Packages::class);
-  }
-
-
-  public function update_validity($timestamp){
-    $username = explode('@', $this->email);
-    $content = http_build_query(array(
-      'key' => 'F8EBD133C14FE318BE82F421B99A6',
-      'action' => 'update_validity',
-      'iptv_user' =>  $username[0],
-      'timestamp' => $timestamp,
-    ));
-
-    $context_options = array (
-      'http' => array (
-        'method' => 'POST',
-        'header'=> "Content-type: application/x-www-form-urlencoded\r\n"
-        . "Content-Length: " . strlen($content) . "\r\n",
-        'content' => $content
-      )
-    );
-
-    $context = stream_context_create($context_options);
-    $result = json_decode(file_get_contents('http://main.queroassistir.tv:25500/qatv.php', null, $context));
-    if($result->status == 200){
-      return true;
-    }else {
-      return false;
-    }
+    return $this->belongsTo(City::class);
   }
 
 }
