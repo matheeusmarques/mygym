@@ -50,7 +50,7 @@ Route::group( ['middleware' => ['auth', 'admin']], function(){
     Route::get('/estados', function() {
       // $category_name = '';
       $data = [
-        'category_name' => 'geo',
+        'category_name' => 'geo-states',
         'page_name' => 'states',
         'username' => Auth::user()->name,
         'role' => Auth::user()->role,
@@ -60,6 +60,21 @@ Route::group( ['middleware' => ['auth', 'admin']], function(){
       ];
       // $pageName = 'analytics';
       return view('admin/states/index')->with($data);
+    });
+
+    Route::get('/cidades', function() {
+      // $category_name = '';
+      $data = [
+        'category_name' => 'geo-cities',
+        'page_name' => 'cities',
+        'username' => Auth::user()->name,
+        'role' => Auth::user()->role,
+        'has_scrollspy' => 0,
+        'scrollspy_offset' => '',
+        'alt_menu' => 0,
+      ];
+      // $pageName = 'analytics';
+      return view('admin/cities/index')->with($data);
     });
 
 
@@ -263,10 +278,18 @@ Route::group( ['middleware' => ['auth', 'admin']], function(){
     Route::get('/get_servers', 'APIController@get_servers');
 
     Route::get('/states/getdata', 'StateController@get_data');
+    Route::get('/states/getdatajson', 'StateController@get_data_json');
 
     Route::post('/states/edit', 'StateController@edit');
     Route::post('/states/delete', 'StateController@delete');
     Route::post('/states/new', 'StateController@store');
+
+    Route::get('/cities/getdata', 'CityController@get_data');
+    Route::get('/cities/getdatajson', 'CityController@get_data_json');
+
+    Route::post('/cities/edit', 'CityController@edit');
+    Route::post('/cities/delete', 'CityController@delete');
+    Route::post('/cities/new', 'CityController@store');
 
 
     Route::post('/usuario/novo', 'UserController@store');

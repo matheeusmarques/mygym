@@ -268,7 +268,7 @@ class UserController extends Controller
   }
 
   public function get_data_admins(){
-    $user = User::all()->where('role' , '1');
+    $user = User::all()->where('role' , '3');
     return datatables()->of($user)
     ->addColumn('action', function($user){
       $button = '<button type="button"
@@ -686,7 +686,7 @@ class UserController extends Controller
     if ($validation->fails())
     {
       return response()->json([
-        'status' => 500,
+        'status' => 400,
         'message' => 'Error! Dados inválidos.',
       ]);
     }
@@ -694,9 +694,8 @@ class UserController extends Controller
       $user =  User::create([
         'name' => $request->input('name'),
         'email' =>  $request->input('email'),
-        'role' => 2,
-        'created_by' => Auth::user()->id,
-        'credits' => $request->input('credits'),
+        'role' => 3,
+        // 'created_by' => Auth::user()->id,
         'cellphone' => $request->input('cellphone'),
         'password' => Hash::make($request->input('password')),
       ]);
@@ -728,8 +727,8 @@ class UserController extends Controller
       $user =  User::create([
         'name' => $request->input('name'),
         'email' =>  $request->input('email'),
-        'role' => 1,
-        'created_by' => Auth::user()->id,
+        'role' => 3,
+        // 'created_by' => Auth::user()->id,
         'cellphone' => $request->input('cellphone'),
         'password' => Hash::make($request->input('password')),
       ]);

@@ -60,10 +60,10 @@ class StateController extends Controller
   }
 
   public function get_data_json(){
-    $states = State::all()->get();
+    $states = State::all();
     $states_array = array(
       'status' => '200',
-      'packages' => $states,
+      'states' => $states,
     );
     return response()->json($states_array);
   }

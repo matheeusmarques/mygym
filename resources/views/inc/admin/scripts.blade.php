@@ -1804,6 +1804,122 @@
 
                             });
                             </script>
+                            {{-- Forms Bootstrap Select --}}
+                            <script src="{{asset('assets/js/scrollspyNav.js')}}"></script>
+                            <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
+                          });
+                        </script>
+                        @break
+
+                        @case('resellers-invoices')
+                        @include('admin.invoices.resellers.invoice')
+                        {{-- Table Datatable Basic Light --}}
+                        <script src="{{asset('plugins/table/datatable/datatables.js')}}"></script>
+                        <script>
+                        $('#zero-config').DataTable({
+                          oLanguage: {
+                            oPaginate: { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                            sInfo: "Mostrando _PAGE_ de _PAGES_",
+                            sSearch: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                            sSearchPlaceholder: "Procurar...",
+                            sLengthMenu: "Resultados :  _MENU_",
+                          },
+                          stripeClasses: [],
+                          lengthMenu: [7, 10, 20, 50],
+                          pageLength: 7,
+                          processing: true,
+                          responsive: true,
+                          responsive: true,
+                          serverSide: true,
+                          order: [[ 0, "desc" ]],
+                          ajax:{
+                            url:  "{{ url('/api/faturas/getdataresellers') }}",
+                          },
+                          columns:[
+                            {
+                              data: 'id',
+                              name: 'id'
+                            },
+                            {
+                              data: 'user_id',
+                              name: 'user_id'
+                            },
+                            {
+                              data: 'package_id',
+                              name: 'package_id'
+                            },
+                            {
+                              data: 'price',
+                              name: 'price'
+                            },
+                            {
+                              data: 'method',
+                              name: 'method'
+                            },
+                            {
+                              data: 'created_at',
+                              name: 'created_at'
+                            },
+                            {
+                              data: 'status',
+                              name: 'status'
+                            },
+                            {
+                              data: 'action',
+                              name: 'action'
+                            }
+                          ]
+                        });
+
+                        </script>
+                        <script>
+                        $(document).ready(function() {
+
+                          $('#modal-approve-invoice').on('show.bs.modal', function (event) {
+                            var button = $(event.relatedTarget);
+                            var id = button.data('id');
+                            var modal = $(this);
+                            modal.find('#invoice_id').attr('value', id);
+
+                          });
+                          $("#form-approve-invoice").submit(function(event) {
+                            event.preventDefault();
+                            $.ajax(
+                              {
+                                type: 'POST',
+                                url:  "{{ url('/api/revendedores/master/aprovarfatura') }}",
+                                data: $('#form-approve-invoice').serialize(),
+                                success: function(response)
+                                {
+                                  $('#modal-approve-invoice').modal('toggle');
+                                  if(response.status == 200){
+                                    $('#form-approve-invoice')[0].reset();
+                                    $('#zero-config').DataTable().ajax.reload();
+                                    swal({
+                                      title: 'OK!',
+                                      text: "Gerado com sucesso!",
+                                      type: 'success',
+                                      padding: '2em'
+                                    })
+                                  }else {
+                                    swal({
+                                      title: 'Erro!',
+                                      text: "Tente novamente!",
+                                      type: 'error',
+                                      padding: '2em'
+                                    })
+                                  }
+                                },
+                                error: function()
+                                {
+                                  console.log(data.serialize);
+                                }
+                              });
+
+                            });
+
+                          });
+                          </script>
                           {{-- Forms Bootstrap Select --}}
                           <script src="{{asset('assets/js/scrollspyNav.js')}}"></script>
                           <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
@@ -1811,8 +1927,11 @@
                       </script>
                       @break
 
-                      @case('resellers-invoices')
-                      @include('admin.invoices.resellers.invoice')
+                      @case('master-resellers')
+                      @include('admin.users.resellers.edit')
+                      @include('admin.users.resellers.create')
+                      @include('admin.users.resellers.credits')
+                      @include('admin.users.resellers.invoice')
                       {{-- Table Datatable Basic Light --}}
                       <script src="{{asset('plugins/table/datatable/datatables.js')}}"></script>
                       <script>
@@ -1833,7 +1952,7 @@
                         serverSide: true,
                         order: [[ 0, "desc" ]],
                         ajax:{
-                          url:  "{{ url('/api/faturas/getdataresellers') }}",
+                          url:  "{{ url('/api/revendedores/masters/getdata') }}",
                         },
                         columns:[
                           {
@@ -1841,28 +1960,24 @@
                             name: 'id'
                           },
                           {
-                            data: 'user_id',
-                            name: 'user_id'
+                            data: 'name',
+                            name: 'name'
                           },
                           {
-                            data: 'package_id',
-                            name: 'package_id'
+                            data: 'email',
+                            name: 'email'
                           },
                           {
-                            data: 'price',
-                            name: 'price'
-                          },
-                          {
-                            data: 'method',
-                            name: 'method'
-                          },
-                          {
-                            data: 'created_at',
-                            name: 'created_at'
+                            data: 'credits',
+                            name: 'credits'
                           },
                           {
                             data: 'status',
                             name: 'status'
+                          },
+                          {
+                            data: 'created_at',
+                            name: 'created_at'
                           },
                           {
                             data: 'action',
@@ -1872,28 +1987,53 @@
                       });
 
                       </script>
+                      {{-- Forms Bootstrap Select --}}
+                      <script src="{{asset('assets/js/scrollspyNav.js')}}"></script>
+                      <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
                       <script>
                       $(document).ready(function() {
+                        $('#modal-new-user').on('show.bs.modal', function (event) {
+                          $("#package option").remove(); // Remove all <option> child tags.
+                          $.getJSON("{{url('api/pacotes/resellers/getdatajson')}}", null, function(data) {
+                            $.each(data.packages, function(index, item) { // Iterates through a collection
+                              $("#package").append( // Append an object to the inside of the select box
+                                $("<option></option>") // Yes you can do this.
+                                .text(item.name)
+                                .val(item.id)
+                              );
+                            });
+                          });
+                        });
 
-                        $('#modal-approve-invoice').on('show.bs.modal', function (event) {
+                        $('#modal-generate-invoice').on('show.bs.modal', function (event) {
                           var button = $(event.relatedTarget);
                           var id = button.data('id');
                           var modal = $(this);
-                          modal.find('#invoice_id').attr('value', id);
+                          modal.find('#id').attr('value', id);
 
+                          $("#package_invoice option").remove(); // Remove all <option> child tags.
+                          $.getJSON("{{url('api/pacotes/revenda/getdatajson')}}", null, function(data) {
+                            $.each(data.packages, function(index, item) { // Iterates through a collection
+                              $("#package_invoice").append( // Append an object to the inside of the select box
+                                $("<option></option>") // Yes you can do this.
+                                .text(item.name)
+                                .val(item.id)
+                              );
+                            });
+                          });
                         });
-                        $("#form-approve-invoice").submit(function(event) {
+                        $("#form-generate-invoice").submit(function(event) {
                           event.preventDefault();
                           $.ajax(
                             {
                               type: 'POST',
-                              url:  "{{ url('/api/revendedores/master/aprovarfatura') }}",
-                              data: $('#form-approve-invoice').serialize(),
+                              url:  "{{ url('/api/revendedores/master/gerarfatura') }}",
+                              data: $('#form-generate-invoice').serialize(),
                               success: function(response)
                               {
-                                $('#modal-approve-invoice').modal('toggle');
+                                $('#modal-generate-invoice').modal('toggle');
                                 if(response.status == 200){
-                                  $('#form-approve-invoice')[0].reset();
+                                  $('#form-generate-invoice')[0].reset();
                                   $('#zero-config').DataTable().ajax.reload();
                                   swal({
                                     title: 'OK!',
@@ -1918,250 +2058,22 @@
 
                           });
 
-                        });
-                        </script>
-                        {{-- Forms Bootstrap Select --}}
-                        <script src="{{asset('assets/js/scrollspyNav.js')}}"></script>
-                        <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
-                      });
-                    </script>
-                    @break
-
-                    @case('master-resellers')
-                    @include('admin.users.resellers.edit')
-                    @include('admin.users.resellers.create')
-                    @include('admin.users.resellers.credits')
-                    @include('admin.users.resellers.invoice')
-                    {{-- Table Datatable Basic Light --}}
-                    <script src="{{asset('plugins/table/datatable/datatables.js')}}"></script>
-                    <script>
-                    $('#zero-config').DataTable({
-                      oLanguage: {
-                        oPaginate: { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
-                        sInfo: "Mostrando _PAGE_ de _PAGES_",
-                        sSearch: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                        sSearchPlaceholder: "Procurar...",
-                        sLengthMenu: "Resultados :  _MENU_",
-                      },
-                      stripeClasses: [],
-                      lengthMenu: [7, 10, 20, 50],
-                      pageLength: 7,
-                      processing: true,
-                      responsive: true,
-                      responsive: true,
-                      serverSide: true,
-                      order: [[ 0, "desc" ]],
-                      ajax:{
-                        url:  "{{ url('/api/revendedores/masters/getdata') }}",
-                      },
-                      columns:[
-                        {
-                          data: 'id',
-                          name: 'id'
-                        },
-                        {
-                          data: 'name',
-                          name: 'name'
-                        },
-                        {
-                          data: 'email',
-                          name: 'email'
-                        },
-                        {
-                          data: 'credits',
-                          name: 'credits'
-                        },
-                        {
-                          data: 'status',
-                          name: 'status'
-                        },
-                        {
-                          data: 'created_at',
-                          name: 'created_at'
-                        },
-                        {
-                          data: 'action',
-                          name: 'action'
-                        }
-                      ]
-                    });
-
-                    </script>
-                    {{-- Forms Bootstrap Select --}}
-                    <script src="{{asset('assets/js/scrollspyNav.js')}}"></script>
-                    <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
-                    <script>
-                    $(document).ready(function() {
-                      $('#modal-new-user').on('show.bs.modal', function (event) {
-                        $("#package option").remove(); // Remove all <option> child tags.
-                        $.getJSON("{{url('api/pacotes/resellers/getdatajson')}}", null, function(data) {
-                          $.each(data.packages, function(index, item) { // Iterates through a collection
-                            $("#package").append( // Append an object to the inside of the select box
-                              $("<option></option>") // Yes you can do this.
-                              .text(item.name)
-                              .val(item.id)
-                            );
-                          });
-                        });
-                      });
-
-                      $('#modal-generate-invoice').on('show.bs.modal', function (event) {
-                        var button = $(event.relatedTarget);
-                        var id = button.data('id');
-                        var modal = $(this);
-                        modal.find('#id').attr('value', id);
-
-                        $("#package_invoice option").remove(); // Remove all <option> child tags.
-                        $.getJSON("{{url('api/pacotes/revenda/getdatajson')}}", null, function(data) {
-                          $.each(data.packages, function(index, item) { // Iterates through a collection
-                            $("#package_invoice").append( // Append an object to the inside of the select box
-                              $("<option></option>") // Yes you can do this.
-                              .text(item.name)
-                              .val(item.id)
-                            );
-                          });
-                        });
-                      });
-                      $("#form-generate-invoice").submit(function(event) {
-                        event.preventDefault();
-                        $.ajax(
-                          {
-                            type: 'POST',
-                            url:  "{{ url('/api/revendedores/master/gerarfatura') }}",
-                            data: $('#form-generate-invoice').serialize(),
-                            success: function(response)
-                            {
-                              $('#modal-generate-invoice').modal('toggle');
-                              if(response.status == 200){
-                                $('#form-generate-invoice')[0].reset();
-                                $('#zero-config').DataTable().ajax.reload();
-                                swal({
-                                  title: 'OK!',
-                                  text: "Gerado com sucesso!",
-                                  type: 'success',
-                                  padding: '2em'
-                                })
-                              }else {
-                                swal({
-                                  title: 'Erro!',
-                                  text: "Tente novamente!",
-                                  type: 'error',
-                                  padding: '2em'
-                                })
-                              }
-                            },
-                            error: function()
-                            {
-                              console.log(data.serialize);
-                            }
-                          });
-
-                        });
-
-                        $("#form-new-user").submit(function(event) {
-                          event.preventDefault();
-                          $.ajax(
-                            {
-                              type: 'POST',
-                              url:  "{{ url('/api/revendedores/masters/novo') }}",
-                              data: $('#form-new-user').serialize(),
-                              success: function(response)
-                              {
-                                $('#modal-new-user').modal('toggle');
-                                if(response.status == 200){
-                                  $('#form-new-user')[0].reset();
-                                  $('#zero-config').DataTable().ajax.reload();
-                                  swal({
-                                    title: 'OK!',
-                                    text: "Cadastrado com sucesso!",
-                                    type: 'success',
-                                    padding: '2em'
-                                  })
-                                }else {
-                                  swal({
-                                    title: 'Erro!',
-                                    text: "Tente novamente!",
-                                    type: 'error',
-                                    padding: '2em'
-                                  })
-                                }
-                              },
-                              error: function()
-                              {
-                                console.log(data.serialize);
-                              }
-                            });
-
-                          });
-
-                          $('#modal-edit-user').on('show.bs.modal', function (event) {
-                            var button = $(event.relatedTarget);
-                            $('#form-edit-user')[0].reset();
-
-                            var id = button.data('id');
-                            var name = button.data('name');
-                            var email = button.data('email');
-                            var cellphone = button.data('cellphone');
-                            var status = button.data('status');
-
-
-                            var modal = $(this);
-
-
-
-                            modal.find('#id').attr('value', id);
-                            modal.find('#status option[value="'+status+'"]').attr('selected', 'true');
-                            modal.find('#name').attr('value', name);
-                            modal.find('#email').attr('value', email);
-                            modal.find('#cellphone').attr('value', cellphone);
-                          });
-
-                          $('#modal-edit-credits').on('show.bs.modal', function (event) {
-                            var button = $(event.relatedTarget);
-                            $('#form-edit-credits')[0].reset();
-
-                            var id = button.data('id');
-                            var credits = button.data('credits');
-                            var email = button.data('email');
-
-                            var modal = $(this);
-
-
-
-                            modal.find('#id').attr('value', id);
-                            modal.find('#credits').attr('value', credits);
-                            modal.find('#email').attr('value', email);
-                          });
-
-
-                          $('#modal-delete-user').on('show.bs.modal', function (event) {
-                            $('#form-delete-package')[0].reset();
-                            var button = $(event.relatedTarget);
-                            var id = button.data('id');
-                            var name = button.data('name');
-
-
-                            var modal = $(this);
-                            modal.find('#id').attr('value', id);
-                            modal.find('#name').attr('value', name);
-                          });
-
-                          $("#form-edit-user").submit(function(event) {
+                          $("#form-new-user").submit(function(event) {
                             event.preventDefault();
                             $.ajax(
                               {
                                 type: 'POST',
-                                url:  "{{ url('api/revendedores/masters/editar') }}",
-                                data: $('#form-edit-user').serialize(),
+                                url:  "{{ url('/api/revendedores/masters/novo') }}",
+                                data: $('#form-new-user').serialize(),
                                 success: function(response)
                                 {
-                                  $('#modal-edit-user').modal('toggle');
+                                  $('#modal-new-user').modal('toggle');
                                   if(response.status == 200){
-                                    $('#form-edit-user')[0].reset();
+                                    $('#form-new-user')[0].reset();
                                     $('#zero-config').DataTable().ajax.reload();
                                     swal({
                                       title: 'OK!',
-                                      text: "Atualizado com sucesso!",
+                                      text: "Cadastrado com sucesso!",
                                       type: 'success',
                                       padding: '2em'
                                     })
@@ -2176,29 +2088,76 @@
                                 },
                                 error: function()
                                 {
-                                  swal({
-                                    title: 'Erro!',
-                                    text: "Tente novamente!",
-                                    type: 'error',
-                                    padding: '2em'
-                                  })
+                                  console.log(data.serialize);
                                 }
                               });
 
                             });
 
-                            $("#form-edit-credits").submit(function(event) {
+                            $('#modal-edit-user').on('show.bs.modal', function (event) {
+                              var button = $(event.relatedTarget);
+                              $('#form-edit-user')[0].reset();
+
+                              var id = button.data('id');
+                              var name = button.data('name');
+                              var email = button.data('email');
+                              var cellphone = button.data('cellphone');
+                              var status = button.data('status');
+
+
+                              var modal = $(this);
+
+
+
+                              modal.find('#id').attr('value', id);
+                              modal.find('#status option[value="'+status+'"]').attr('selected', 'true');
+                              modal.find('#name').attr('value', name);
+                              modal.find('#email').attr('value', email);
+                              modal.find('#cellphone').attr('value', cellphone);
+                            });
+
+                            $('#modal-edit-credits').on('show.bs.modal', function (event) {
+                              var button = $(event.relatedTarget);
+                              $('#form-edit-credits')[0].reset();
+
+                              var id = button.data('id');
+                              var credits = button.data('credits');
+                              var email = button.data('email');
+
+                              var modal = $(this);
+
+
+
+                              modal.find('#id').attr('value', id);
+                              modal.find('#credits').attr('value', credits);
+                              modal.find('#email').attr('value', email);
+                            });
+
+
+                            $('#modal-delete-user').on('show.bs.modal', function (event) {
+                              $('#form-delete-package')[0].reset();
+                              var button = $(event.relatedTarget);
+                              var id = button.data('id');
+                              var name = button.data('name');
+
+
+                              var modal = $(this);
+                              modal.find('#id').attr('value', id);
+                              modal.find('#name').attr('value', name);
+                            });
+
+                            $("#form-edit-user").submit(function(event) {
                               event.preventDefault();
                               $.ajax(
                                 {
                                   type: 'POST',
-                                  url:  "{{ url('api/revendedores/masters/editarcreditos') }}",
-                                  data: $('#form-edit-credits').serialize(),
+                                  url:  "{{ url('api/revendedores/masters/editar') }}",
+                                  data: $('#form-edit-user').serialize(),
                                   success: function(response)
                                   {
-                                    $('#modal-edit-credits').modal('toggle');
+                                    $('#modal-edit-user').modal('toggle');
                                     if(response.status == 200){
-                                      $('#form-edit-credits')[0].reset();
+                                      $('#form-edit-user')[0].reset();
                                       $('#zero-config').DataTable().ajax.reload();
                                       swal({
                                         title: 'OK!',
@@ -2227,84 +2186,23 @@
                                 });
 
                               });
-                            });
-                            </script>
-                            @break
-                            @case('admin')
-                            @include('admin.users.admin.edit')
-                            @include('admin.users.admin.create')
-                            {{-- Table Datatable Basic Light --}}
-                            <script src="{{asset('plugins/table/datatable/datatables.js')}}"></script>
-                            <script>
-                            $('#zero-config').DataTable({
-                              oLanguage: {
-                                oPaginate: { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
-                                sInfo: "Mostrando _PAGE_ de _PAGES_",
-                                sSearch: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                                sSearchPlaceholder: "Procurar...",
-                                sLengthMenu: "Resultados :  _MENU_",
-                              },
-                              stripeClasses: [],
-                              lengthMenu: [7, 10, 20, 50],
-                              pageLength: 7,
-                              processing: true,
-                              responsive: true,
-                              responsive: true,
-                              serverSide: true,
-                              order: [[ 0, "desc" ]],
-                              ajax:{
-                                url:  "{{ url('/api/administradores/getdata') }}",
-                              },
-                              columns:[
-                                {
-                                  data: 'id',
-                                  name: 'id'
-                                },
-                                {
-                                  data: 'name',
-                                  name: 'name'
-                                },
-                                {
-                                  data: 'email',
-                                  name: 'email'
-                                },
-                                {
-                                  data: 'status',
-                                  name: 'status'
-                                },
-                                {
-                                  data: 'created_at',
-                                  name: 'created_at'
-                                },
-                                {
-                                  data: 'action',
-                                  name: 'action'
-                                }
-                              ]
-                            });
 
-                            </script>
-                            {{-- Forms Bootstrap Select --}}
-                            <script src="{{asset('assets/js/scrollspyNav.js')}}"></script>
-                            <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
-                            <script>
-                            $(document).ready(function() {
-                              $("#form-new-user").submit(function(event) {
+                              $("#form-edit-credits").submit(function(event) {
                                 event.preventDefault();
                                 $.ajax(
                                   {
                                     type: 'POST',
-                                    url:  "{{ url('/api/administradores/novo') }}",
-                                    data: $('#form-new-user').serialize(),
+                                    url:  "{{ url('api/revendedores/masters/editarcreditos') }}",
+                                    data: $('#form-edit-credits').serialize(),
                                     success: function(response)
                                     {
-                                      $('#modal-new-user').modal('toggle');
+                                      $('#modal-edit-credits').modal('toggle');
                                       if(response.status == 200){
-                                        $('#form-new-user')[0].reset();
+                                        $('#form-edit-credits')[0].reset();
                                         $('#zero-config').DataTable().ajax.reload();
                                         swal({
                                           title: 'OK!',
-                                          text: "Cadastrado com sucesso!",
+                                          text: "Atualizado com sucesso!",
                                           type: 'success',
                                           padding: '2em'
                                         })
@@ -2319,80 +2217,94 @@
                                     },
                                     error: function()
                                     {
-                                      console.log(data.serialize);
+                                      swal({
+                                        title: 'Erro!',
+                                        text: "Tente novamente!",
+                                        type: 'error',
+                                        padding: '2em'
+                                      })
                                     }
                                   });
 
                                 });
+                              });
+                              </script>
+                              @break
+                              @case('admin')
+                              @include('admin.users.admin.edit')
+                              @include('admin.users.admin.create')
+                              {{-- Table Datatable Basic Light --}}
+                              <script src="{{asset('plugins/table/datatable/datatables.js')}}"></script>
+                              <script>
+                              $('#zero-config').DataTable({
+                                oLanguage: {
+                                  oPaginate: { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                                  sInfo: "Mostrando _PAGE_ de _PAGES_",
+                                  sSearch: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                                  sSearchPlaceholder: "Procurar...",
+                                  sLengthMenu: "Resultados :  _MENU_",
+                                },
+                                stripeClasses: [],
+                                lengthMenu: [7, 10, 20, 50],
+                                pageLength: 7,
+                                processing: true,
+                                responsive: true,
+                                responsive: true,
+                                serverSide: true,
+                                order: [[ 0, "desc" ]],
+                                ajax:{
+                                  url:  "{{ url('/api/administradores/getdata') }}",
+                                },
+                                columns:[
+                                  {
+                                    data: 'id',
+                                    name: 'id'
+                                  },
+                                  {
+                                    data: 'name',
+                                    name: 'name'
+                                  },
+                                  {
+                                    data: 'email',
+                                    name: 'email'
+                                  },
+                                  {
+                                    data: 'status',
+                                    name: 'status'
+                                  },
+                                  {
+                                    data: 'created_at',
+                                    name: 'created_at'
+                                  },
+                                  {
+                                    data: 'action',
+                                    name: 'action'
+                                  }
+                                ]
+                              });
 
-                                $('#modal-edit-user').on('show.bs.modal', function (event) {
-                                  var button = $(event.relatedTarget);
-                                  $('#form-edit-user')[0].reset();
-
-                                  var id = button.data('id');
-                                  var name = button.data('name');
-                                  var email = button.data('email');
-                                  var cellphone = button.data('cellphone');
-                                  var status = button.data('status');
-
-
-                                  var modal = $(this);
-
-
-
-                                  modal.find('#id').attr('value', id);
-                                  modal.find('#status option[value="'+status+'"]').attr('selected', 'true');
-                                  modal.find('#name').attr('value', name);
-                                  modal.find('#email').attr('value', email);
-                                  modal.find('#cellphone').attr('value', cellphone);
-                                });
-
-                                $('#modal-edit-credits').on('show.bs.modal', function (event) {
-                                  var button = $(event.relatedTarget);
-                                  $('#form-edit-credits')[0].reset();
-
-                                  var id = button.data('id');
-                                  var credits = button.data('credits');
-                                  var email = button.data('email');
-
-                                  var modal = $(this);
-
-
-
-                                  modal.find('#id').attr('value', id);
-                                  modal.find('#credits').attr('value', credits);
-                                  modal.find('#email').attr('value', email);
-                                });
-
-
-                                $('#modal-delete-user').on('show.bs.modal', function (event) {
-                                  $('#form-delete-package')[0].reset();
-                                  var button = $(event.relatedTarget);
-                                  var id = button.data('id');
-                                  var name = button.data('name');
-
-
-                                  var modal = $(this);
-                                  modal.find('#id').attr('value', id);
-                                  modal.find('#name').attr('value', name);
-                                });
-
-                                $("#form-edit-user").submit(function(event) {
+                              </script>
+                              {{-- Forms Bootstrap Select --}}
+                              <script src="{{asset('assets/js/scrollspyNav.js')}}"></script>
+                              <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
+                              <script>
+                              $(document).ready(function() {
+                                $("#form-new-user").submit(function(event) {
                                   event.preventDefault();
                                   $.ajax(
                                     {
                                       type: 'POST',
-                                      url:  "{{ url('api/administradores/editar') }}",
-                                      data: $('#form-edit-user').serialize(),
+                                      url:  "{{ url('/api/administradores/novo') }}",
+                                      data: $('#form-new-user').serialize(),
                                       success: function(response)
                                       {
-                                        $('#modal-edit-user').modal('toggle');
+                                        $('#modal-new-user').modal('toggle');
                                         if(response.status == 200){
-                                          $('#form-edit-user')[0].reset();
+                                          $('#form-new-user')[0].reset();
                                           $('#zero-config').DataTable().ajax.reload();
                                           swal({
                                             title: 'OK!',
-                                            text: "Atualizado com sucesso!",
+                                            text: "Cadastrado com sucesso!",
                                             type: 'success',
                                             padding: '2em'
                                           })
@@ -2407,171 +2319,218 @@
                                       },
                                       error: function()
                                       {
-                                        swal({
-                                          title: 'Erro!',
-                                          text: "Tente novamente!",
-                                          type: 'error',
-                                          padding: '2em'
-                                        })
-                                      }
-                                    });
-
-                                  });
-                                });
-                                </script>
-                                @break
-
-
-                                @case('resell-packages')
-                                @include('admin.packages.edit_resell')
-                                @include('admin.packages.create_resell')
-                                @include('admin.packages.delete_resell')
-                                {{-- Table Datatable Basic Light --}}
-                                <script src="{{asset('plugins/table/datatable/datatables.js')}}"></script>
-                                <script>
-                                $('#zero-config').DataTable({
-                                  oLanguage: {
-                                    oPaginate: { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
-                                    sInfo: "Mostrando _PAGE_ de _PAGES_",
-                                    sSearch: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                                    sSearchPlaceholder: "Procurar...",
-                                    sLengthMenu: "Resultados :  _MENU_",
-                                  },
-                                  stripeClasses: [],
-                                  lengthMenu: [7, 10, 20, 50],
-                                  pageLength: 7,
-                                  processing: true,
-                                  responsive: true,
-                                  responsive: true,
-                                  serverSide: true,
-                                  order: [[ 0, "desc" ]],
-                                  ajax:{
-                                    url:  "{{ url('/api/pacotes/revenda/getdata') }}",
-                                  },
-                                  columns:[
-                                    {
-                                      data: 'id',
-                                      name: 'id'
-                                    },
-                                    {
-                                      data: 'name',
-                                      name: 'name'
-                                    },
-                                    {
-                                      data: 'description',
-                                      name: 'description'
-                                    },
-                                    {
-                                      data: 'quantity',
-                                      name: 'quantity'
-                                    },
-                                    {
-                                      data: 'price',
-                                      name: 'price'
-                                    },
-                                    {
-                                      data: 'status',
-                                      name: 'status'
-                                    },
-                                    {
-                                      data: 'action',
-                                      name: 'action'
-                                    }
-                                  ]
-                                });
-
-                                $('#modal-edit-package').on('show.bs.modal', function (event) {
-                                  $('#form-edit-package')[0].reset();
-                                  $('#status').prop('selectedIndex',0);
-                                  var button = $(event.relatedTarget);
-                                  var id = button.data('id');
-                                  var name = button.data('name');
-                                  var description = button.data('description');
-                                  var price = button.data('price');
-                                  var quantity = button.data('quantity');
-                                  var status = button.data('status');
-
-                                  var modal = $(this);
-                                  modal.find('[value="0"]').attr('selected', false);
-                                  modal.find('[value="1"]').attr('selected', false);
-                                  modal.find('#id').attr('value', id);
-                                  modal.find('#name').attr('value', name);
-                                  modal.find('#description').attr('value', description);
-                                  modal.find('#price').attr('value', price);
-                                  modal.find('#quantity').attr('value', quantity);
-                                  modal.find('[value="'+status+'"]').attr('selected', true);
-                                });
-
-
-                                $('#modal-delete-package').on('show.bs.modal', function (event) {
-                                  $('#form-delete-package')[0].reset();
-                                  var button = $(event.relatedTarget);
-                                  var id = button.data('id');
-                                  var name = button.data('name');
-
-
-                                  var modal = $(this);
-                                  modal.find('#id').attr('value', id);
-                                  modal.find('#name').attr('value', name);
-                                });
-
-                                $("#form-edit-package").submit(function(event) {
-                                  event.preventDefault();
-                                  $.ajax(
-                                    {
-                                      type: 'POST',
-                                      url:  "{{ url('api/pacotes/revenda/editar') }}",
-                                      data: $('#form-edit-package').serialize(),
-                                      success: function(response)
-                                      {
-                                        $('#modal-edit-package').modal('toggle');
-                                        if(response.status == 200){
-                                          $('#form-edit-package')[0].reset();
-                                          $('#zero-config').DataTable().ajax.reload();
-                                          swal({
-                                            title: 'OK!',
-                                            text: "Atualizado com sucesso!",
-                                            type: 'success',
-                                            padding: '2em'
-                                          })
-                                        }else {
-                                          swal({
-                                            title: 'Erro!',
-                                            text: "Tente novamente!",
-                                            type: 'error',
-                                            padding: '2em'
-                                          })
-                                        }
-                                      },
-                                      error: function()
-                                      {
-                                        swal({
-                                          title: 'Erro!',
-                                          text: "Tente novamente!",
-                                          type: 'error',
-                                          padding: '2em'
-                                        })
+                                        console.log(data.serialize);
                                       }
                                     });
 
                                   });
 
-                                  $("#form-new-package").submit(function(event) {
+                                  $('#modal-edit-user').on('show.bs.modal', function (event) {
+                                    var button = $(event.relatedTarget);
+                                    $('#form-edit-user')[0].reset();
+
+                                    var id = button.data('id');
+                                    var name = button.data('name');
+                                    var email = button.data('email');
+                                    var cellphone = button.data('cellphone');
+                                    var status = button.data('status');
+
+
+                                    var modal = $(this);
+
+
+
+                                    modal.find('#id').attr('value', id);
+                                    modal.find('#status option[value="'+status+'"]').attr('selected', 'true');
+                                    modal.find('#name').attr('value', name);
+                                    modal.find('#email').attr('value', email);
+                                    modal.find('#cellphone').attr('value', cellphone);
+                                  });
+
+                                  $('#modal-edit-credits').on('show.bs.modal', function (event) {
+                                    var button = $(event.relatedTarget);
+                                    $('#form-edit-credits')[0].reset();
+
+                                    var id = button.data('id');
+                                    var credits = button.data('credits');
+                                    var email = button.data('email');
+
+                                    var modal = $(this);
+
+
+
+                                    modal.find('#id').attr('value', id);
+                                    modal.find('#credits').attr('value', credits);
+                                    modal.find('#email').attr('value', email);
+                                  });
+
+
+                                  $('#modal-delete-user').on('show.bs.modal', function (event) {
+                                    $('#form-delete-package')[0].reset();
+                                    var button = $(event.relatedTarget);
+                                    var id = button.data('id');
+                                    var name = button.data('name');
+
+
+                                    var modal = $(this);
+                                    modal.find('#id').attr('value', id);
+                                    modal.find('#name').attr('value', name);
+                                  });
+
+                                  $("#form-edit-user").submit(function(event) {
                                     event.preventDefault();
                                     $.ajax(
                                       {
                                         type: 'POST',
-                                        url:  "{{ url('api/pacotes/revenda/novo') }}",
-                                        data: $('#form-new-package').serialize(),
+                                        url:  "{{ url('api/administradores/editar') }}",
+                                        data: $('#form-edit-user').serialize(),
                                         success: function(response)
                                         {
-                                          $('#modal-new-package').modal('toggle');
+                                          $('#modal-edit-user').modal('toggle');
                                           if(response.status == 200){
-                                            $('#form-new-package')[0].reset();
+                                            $('#form-edit-user')[0].reset();
                                             $('#zero-config').DataTable().ajax.reload();
                                             swal({
                                               title: 'OK!',
-                                              text: "Adicionado com sucesso!",
+                                              text: "Atualizado com sucesso!",
+                                              type: 'success',
+                                              padding: '2em'
+                                            })
+                                          }else {
+                                            swal({
+                                              title: 'Erro!',
+                                              text: "Tente novamente!",
+                                              type: 'error',
+                                              padding: '2em'
+                                            })
+                                          }
+                                        },
+                                        error: function()
+                                        {
+                                          swal({
+                                            title: 'Erro!',
+                                            text: "Tente novamente!",
+                                            type: 'error',
+                                            padding: '2em'
+                                          })
+                                        }
+                                      });
+
+                                    });
+                                  });
+                                  </script>
+                                  @break
+
+
+                                  @case('resell-packages')
+                                  @include('admin.packages.edit_resell')
+                                  @include('admin.packages.create_resell')
+                                  @include('admin.packages.delete_resell')
+                                  {{-- Table Datatable Basic Light --}}
+                                  <script src="{{asset('plugins/table/datatable/datatables.js')}}"></script>
+                                  <script>
+                                  $('#zero-config').DataTable({
+                                    oLanguage: {
+                                      oPaginate: { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                                      sInfo: "Mostrando _PAGE_ de _PAGES_",
+                                      sSearch: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                                      sSearchPlaceholder: "Procurar...",
+                                      sLengthMenu: "Resultados :  _MENU_",
+                                    },
+                                    stripeClasses: [],
+                                    lengthMenu: [7, 10, 20, 50],
+                                    pageLength: 7,
+                                    processing: true,
+                                    responsive: true,
+                                    responsive: true,
+                                    serverSide: true,
+                                    order: [[ 0, "desc" ]],
+                                    ajax:{
+                                      url:  "{{ url('/api/pacotes/revenda/getdata') }}",
+                                    },
+                                    columns:[
+                                      {
+                                        data: 'id',
+                                        name: 'id'
+                                      },
+                                      {
+                                        data: 'name',
+                                        name: 'name'
+                                      },
+                                      {
+                                        data: 'description',
+                                        name: 'description'
+                                      },
+                                      {
+                                        data: 'quantity',
+                                        name: 'quantity'
+                                      },
+                                      {
+                                        data: 'price',
+                                        name: 'price'
+                                      },
+                                      {
+                                        data: 'status',
+                                        name: 'status'
+                                      },
+                                      {
+                                        data: 'action',
+                                        name: 'action'
+                                      }
+                                    ]
+                                  });
+
+                                  $('#modal-edit-package').on('show.bs.modal', function (event) {
+                                    $('#form-edit-package')[0].reset();
+                                    $('#status').prop('selectedIndex',0);
+                                    var button = $(event.relatedTarget);
+                                    var id = button.data('id');
+                                    var name = button.data('name');
+                                    var description = button.data('description');
+                                    var price = button.data('price');
+                                    var quantity = button.data('quantity');
+                                    var status = button.data('status');
+
+                                    var modal = $(this);
+                                    modal.find('[value="0"]').attr('selected', false);
+                                    modal.find('[value="1"]').attr('selected', false);
+                                    modal.find('#id').attr('value', id);
+                                    modal.find('#name').attr('value', name);
+                                    modal.find('#description').attr('value', description);
+                                    modal.find('#price').attr('value', price);
+                                    modal.find('#quantity').attr('value', quantity);
+                                    modal.find('[value="'+status+'"]').attr('selected', true);
+                                  });
+
+
+                                  $('#modal-delete-package').on('show.bs.modal', function (event) {
+                                    $('#form-delete-package')[0].reset();
+                                    var button = $(event.relatedTarget);
+                                    var id = button.data('id');
+                                    var name = button.data('name');
+
+
+                                    var modal = $(this);
+                                    modal.find('#id').attr('value', id);
+                                    modal.find('#name').attr('value', name);
+                                  });
+
+                                  $("#form-edit-package").submit(function(event) {
+                                    event.preventDefault();
+                                    $.ajax(
+                                      {
+                                        type: 'POST',
+                                        url:  "{{ url('api/pacotes/revenda/editar') }}",
+                                        data: $('#form-edit-package').serialize(),
+                                        success: function(response)
+                                        {
+                                          $('#modal-edit-package').modal('toggle');
+                                          if(response.status == 200){
+                                            $('#form-edit-package')[0].reset();
+                                            $('#zero-config').DataTable().ajax.reload();
+                                            swal({
+                                              title: 'OK!',
+                                              text: "Atualizado com sucesso!",
                                               type: 'success',
                                               padding: '2em'
                                             })
@@ -2597,22 +2556,22 @@
 
                                     });
 
-                                    $("#form-delete-package").submit(function(event) {
+                                    $("#form-new-package").submit(function(event) {
                                       event.preventDefault();
                                       $.ajax(
                                         {
                                           type: 'POST',
-                                          url:  "{{ url('api/pacotes/revenda/deletar') }}",
-                                          data: $('#form-delete-package').serialize(),
+                                          url:  "{{ url('api/pacotes/revenda/novo') }}",
+                                          data: $('#form-new-package').serialize(),
                                           success: function(response)
                                           {
-                                            $('#modal-delete-package').modal('toggle');
+                                            $('#modal-new-package').modal('toggle');
                                             if(response.status == 200){
-                                              $('#form-delete-package')[0].reset();
+                                              $('#form-new-package')[0].reset();
                                               $('#zero-config').DataTable().ajax.reload();
                                               swal({
                                                 title: 'OK!',
-                                                text: "Deletado com sucesso!",
+                                                text: "Adicionado com sucesso!",
                                                 type: 'success',
                                                 padding: '2em'
                                               })
@@ -2638,103 +2597,22 @@
 
                                       });
 
-
-                                      </script>
-                                      {{-- Forms Bootstrap Select --}}
-                                      <script src="{{asset('assets/js/scrollspyNav.js')}}"></script>
-                                      <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
-                                      @break
-
-                                      @case('states')
-                                      @include('admin.states.edit')
-                                      @include('admin.states.delete')
-                                      @include('admin.states.create')
-                                      {{-- Table Datatable Basic Light --}}
-                                      <script src="{{asset('plugins/table/datatable/datatables.js')}}"></script>
-                                      <script>
-                                      $('#zero-config').DataTable({
-                                        oLanguage: {
-                                          oPaginate: { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
-                                          sInfo: "Mostrando _PAGE_ de _PAGES_",
-                                          sSearch: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                                          sSearchPlaceholder: "Procurar...",
-                                          sLengthMenu: "Resultados :  _MENU_",
-                                        },
-                                        stripeClasses: [],
-                                        lengthMenu: [7, 10, 20, 50],
-                                        pageLength: 7,
-                                        processing: true,
-                                        responsive: true,
-                                        responsive: true,
-                                        serverSide: true,
-                                        order: [[ 0, "desc" ]],
-                                        ajax:{
-                                          url:  "{{ url('/api/states/getdata') }}",
-                                        },
-                                        columns:[
-                                          {
-                                            data: 'id',
-                                            name: 'id'
-                                          },
-                                          {
-                                            data: 'name',
-                                            name: 'name'
-                                          },
-                                          {
-                                            data: 'acronym',
-                                            name: 'acronym'
-                                          },
-                                          {
-                                            data: 'action',
-                                            name: 'action'
-                                          }
-                                        ]
-                                      });
-
-                                      $('#modal-edit-state').on('show.bs.modal', function (event) {
-                                        $('#form-edit-state')[0].reset();
-                                        var button = $(event.relatedTarget);
-                                        var id = button.data('id');
-                                        var name = button.data('name');
-                                        var acronym = button.data('acronym');
-
-                                        var modal = $(this);
-                                        modal.find('[value="0"]').attr('selected', false);
-                                        modal.find('[value="1"]').attr('selected', false);
-                                        modal.find('#id').attr('value', id);
-                                        modal.find('#name').attr('value', name);
-                                        modal.find('#acronym').attr('value', acronym);
-                                      });
-
-
-                                      $('#modal-delete-state').on('show.bs.modal', function (event) {
-                                        $('#form-delete-state')[0].reset();
-                                        var button = $(event.relatedTarget);
-                                        var id = button.data('id');
-                                        var name = button.data('name');
-
-
-                                        var modal = $(this);
-                                        modal.find('#id').attr('value', id);
-                                        modal.find('#name').text(name);
-                                      });
-
-                                      $("#form-edit-state").submit(function(event) {
+                                      $("#form-delete-package").submit(function(event) {
                                         event.preventDefault();
                                         $.ajax(
                                           {
                                             type: 'POST',
-                                            url:  "{{ url('api/states/edit') }}",
-                                            data: $('#form-edit-state').serialize(),
+                                            url:  "{{ url('api/pacotes/revenda/deletar') }}",
+                                            data: $('#form-delete-package').serialize(),
                                             success: function(response)
                                             {
-                                              $('#modal-edit-state').modal('toggle');
+                                              $('#modal-delete-package').modal('toggle');
                                               if(response.status == 200){
-                                                $('#form-edit-state')[0].reset();
+                                                $('#form-delete-package')[0].reset();
                                                 $('#zero-config').DataTable().ajax.reload();
                                                 swal({
                                                   title: 'OK!',
-                                                  text: "Atualizado com sucesso!",
+                                                  text: "Deletado com sucesso!",
                                                   type: 'success',
                                                   padding: '2em'
                                                 })
@@ -2760,22 +2638,103 @@
 
                                         });
 
-                                        $("#form-new-state").submit(function(event) {
+
+                                        </script>
+                                        {{-- Forms Bootstrap Select --}}
+                                        <script src="{{asset('assets/js/scrollspyNav.js')}}"></script>
+                                        <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
+                                        @break
+
+                                        @case('states')
+                                        @include('admin.states.edit')
+                                        @include('admin.states.delete')
+                                        @include('admin.states.create')
+                                        {{-- Table Datatable Basic Light --}}
+                                        <script src="{{asset('plugins/table/datatable/datatables.js')}}"></script>
+                                        <script>
+                                        $('#zero-config').DataTable({
+                                          oLanguage: {
+                                            oPaginate: { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                                            sInfo: "Mostrando _PAGE_ de _PAGES_",
+                                            sSearch: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                                            sSearchPlaceholder: "Procurar...",
+                                            sLengthMenu: "Resultados :  _MENU_",
+                                          },
+                                          stripeClasses: [],
+                                          lengthMenu: [7, 10, 20, 50],
+                                          pageLength: 7,
+                                          processing: true,
+                                          responsive: true,
+                                          responsive: true,
+                                          serverSide: true,
+                                          order: [[ 0, "desc" ]],
+                                          ajax:{
+                                            url:  "{{ url('/api/states/getdata') }}",
+                                          },
+                                          columns:[
+                                            {
+                                              data: 'id',
+                                              name: 'id'
+                                            },
+                                            {
+                                              data: 'name',
+                                              name: 'name'
+                                            },
+                                            {
+                                              data: 'acronym',
+                                              name: 'acronym'
+                                            },
+                                            {
+                                              data: 'action',
+                                              name: 'action'
+                                            }
+                                          ]
+                                        });
+
+                                        $('#modal-edit-state').on('show.bs.modal', function (event) {
+                                          $('#form-edit-state')[0].reset();
+                                          var button = $(event.relatedTarget);
+                                          var id = button.data('id');
+                                          var name = button.data('name');
+                                          var acronym = button.data('acronym');
+
+                                          var modal = $(this);
+                                          modal.find('[value="0"]').attr('selected', false);
+                                          modal.find('[value="1"]').attr('selected', false);
+                                          modal.find('#id').attr('value', id);
+                                          modal.find('#name').attr('value', name);
+                                          modal.find('#acronym').attr('value', acronym);
+                                        });
+
+
+                                        $('#modal-delete-state').on('show.bs.modal', function (event) {
+                                          $('#form-delete-state')[0].reset();
+                                          var button = $(event.relatedTarget);
+                                          var id = button.data('id');
+                                          var name = button.data('name');
+
+
+                                          var modal = $(this);
+                                          modal.find('#id').attr('value', id);
+                                          modal.find('#name').text(name);
+                                        });
+
+                                        $("#form-edit-state").submit(function(event) {
                                           event.preventDefault();
                                           $.ajax(
                                             {
                                               type: 'POST',
-                                              url:  "{{ url('api/states/new') }}",
-                                              data: $('#form-new-state').serialize(),
+                                              url:  "{{ url('api/states/edit') }}",
+                                              data: $('#form-edit-state').serialize(),
                                               success: function(response)
                                               {
-                                                $('#modal-new-state').modal('toggle');
+                                                $('#modal-edit-state').modal('toggle');
                                                 if(response.status == 200){
-                                                  $('#form-new-state')[0].reset();
+                                                  $('#form-edit-state')[0].reset();
                                                   $('#zero-config').DataTable().ajax.reload();
                                                   swal({
                                                     title: 'OK!',
-                                                    text: "Adicionado com sucesso!",
+                                                    text: "Atualizado com sucesso!",
                                                     type: 'success',
                                                     padding: '2em'
                                                   })
@@ -2801,22 +2760,22 @@
 
                                           });
 
-                                          $("#form-delete-state").submit(function(event) {
+                                          $("#form-new-state").submit(function(event) {
                                             event.preventDefault();
                                             $.ajax(
                                               {
                                                 type: 'POST',
-                                                url:  "{{ url('api/states/delete') }}",
-                                                data: $('#form-delete-state').serialize(),
+                                                url:  "{{ url('api/states/new') }}",
+                                                data: $('#form-new-state').serialize(),
                                                 success: function(response)
                                                 {
-                                                  $('#modal-delete-state').modal('toggle');
+                                                  $('#modal-new-state').modal('toggle');
                                                   if(response.status == 200){
-                                                    $('#form-delete-state')[0].reset();
+                                                    $('#form-new-state')[0].reset();
                                                     $('#zero-config').DataTable().ajax.reload();
                                                     swal({
                                                       title: 'OK!',
-                                                      text: "Deletado com sucesso!",
+                                                      text: "Adicionado com sucesso!",
                                                       type: 'success',
                                                       padding: '2em'
                                                     })
@@ -2842,61 +2801,25 @@
 
                                             });
 
-
-                                            </script>
-                                            {{-- Forms Bootstrap Select --}}
-                                            <script src="{{asset('assets/js/scrollspyNav.js')}}"></script>
-                                            <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
-                                            @break
-
-                                            @case('geral-settings')
-                                            {{-- User Account Setting  --}}
-                                            <script src="{{asset('plugins/dropify/dropify.min.js')}}"></script>
-                                            <script src="{{asset('plugins/blockui/jquery.blockUI.min.js')}}"></script>
-                                            <script src="{{asset('assets/js/users/account-settings.js')}}"></script>
-
-                                            <script>
-                                            @isset($settings)
-                                            var server_cdn = {{$settings->server_cdn}};
-                                            @endisset
-                                            $("#server_cdn option").remove();
-                                            $.getJSON("{{url('api/get_servers')}}", null, function(data) {
-                                              $.each(data.servers, function(index, item) {
-                                                if(item.id == server_cdn){
-                                                  $("#server_cdn").append(
-                                                    $("<option selected='true'></option>")
-                                                    .text(item.server_name)
-                                                    .val(item.id)
-                                                  );
-                                                }else {
-                                                  $("#server_cdn").append(
-                                                    $("<option></option>")
-                                                    .text(item.server_name)
-                                                    .val(item.id)
-                                                  );
-                                                }
-                                              });
-                                            });
-
-                                            $("#form-settings").submit(function(event) {
+                                            $("#form-delete-state").submit(function(event) {
                                               event.preventDefault();
                                               $.ajax(
                                                 {
                                                   type: 'POST',
-                                                  url:  "{{ url('api/configuracoes/salvar') }}",
-                                                  data: $('#form-settings').serialize(),
+                                                  url:  "{{ url('api/states/delete') }}",
+                                                  data: $('#form-delete-state').serialize(),
                                                   success: function(response)
                                                   {
-                                                    $('#modal-settings').modal('toggle');
+                                                    $('#modal-delete-state').modal('toggle');
                                                     if(response.status == 200){
-                                                      $('#form-settings')[0].reset();
+                                                      $('#form-delete-state')[0].reset();
+                                                      $('#zero-config').DataTable().ajax.reload();
                                                       swal({
                                                         title: 'OK!',
-                                                        text: "Salvo com sucesso!",
+                                                        text: "Deletado com sucesso!",
                                                         type: 'success',
                                                         padding: '2em'
                                                       })
-                                                      location.reload();
                                                     }else {
                                                       swal({
                                                         title: 'Erro!',
@@ -2919,10 +2842,330 @@
 
                                               });
 
-                                              </script>
 
+                                              </script>
+                                              {{-- Forms Bootstrap Select --}}
+                                              <script src="{{asset('assets/js/scrollspyNav.js')}}"></script>
+                                              <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
                                               @break
-                                              @default
-                                              <script>console.log('No custom script available.')</script>
-                                            @endswitch
-                                            <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+
+                                              @case('cities')
+                                              @include('admin.cities.edit')
+                                              @include('admin.cities.delete')
+                                              @include('admin.cities.create')
+                                              {{-- Table Datatable Basic Light --}}
+                                              <script src="{{asset('plugins/table/datatable/datatables.js')}}"></script>
+                                              <script>
+                                              $('#zero-config').DataTable({
+                                                oLanguage: {
+                                                  oPaginate: { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                                                  sInfo: "Mostrando _PAGE_ de _PAGES_",
+                                                  sSearch: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                                                  sSearchPlaceholder: "Procurar...",
+                                                  sLengthMenu: "Resultados :  _MENU_",
+                                                },
+                                                stripeClasses: [],
+                                                lengthMenu: [7, 10, 20, 50],
+                                                pageLength: 7,
+                                                processing: true,
+                                                responsive: true,
+                                                responsive: true,
+                                                serverSide: true,
+                                                order: [[ 0, "desc" ]],
+                                                ajax:{
+                                                  url:  "{{ url('/api/cities/getdata') }}",
+                                                },
+                                                columns:[
+                                                  {
+                                                    data: 'id',
+                                                    name: 'id'
+                                                  },
+                                                  {
+                                                    data: 'name',
+                                                    name: 'name'
+                                                  },
+                                                  {
+                                                    data: 'state_id',
+                                                    name: 'state_id'
+                                                  },
+                                                  {
+                                                    data: 'action',
+                                                    name: 'action'
+                                                  }
+                                                ]
+                                              });
+
+                                              </script>
+                                              <script>
+                                              $(document).ready(function() {
+
+                                                $('#modal-new-city').on('show.bs.modal', function (event) {
+                                                  $("#states_id option").remove(); // Remove all <option> child tags.
+                                                  var button = $(event.relatedTarget);
+                                                  var modal = $(this);
+
+                                                  $.getJSON("{{url('api/states/getdatajson')}}", null, function(data) {
+                                                    $.each(data.states, function(index, item) { // Iterates through a collection
+                                                      $("#states_id").append( // Append an object to the inside of the select box
+                                                        $("<option></option>") // Yes you can do this.
+                                                        .text(item.name)
+                                                        .val(item.id)
+                                                      );
+                                                    });
+                                                  });
+                                                });
+
+                                                $('#modal-edit-city').on('show.bs.modal', function (event) {
+                                                  var button = $(event.relatedTarget);
+                                                  var state_id = button.data('state_id');
+
+                                                  $('#form-edit-city')[0].reset();
+
+                                                  $("#state_id option").remove(); // Remove all <option> child tags.
+                                                  // event.preventDefault();
+                                                  $.getJSON("{{url('api/states/getdatajson')}}", null, function(data) {
+                                                    $.each(data.states, function(index, item) { // Iterates through a collection
+                                                      if(item.id == state_id){
+                                                        $("#state_id").append( // Append an object to the inside of the select box
+                                                          $("<option selected='true'></option>") // Yes you can do this.
+                                                          .text(item.name)
+                                                          .val(item.id)
+                                                        );
+                                                      }else {
+                                                        $("#state_id").append( // Append an object to the inside of the select box
+                                                          $("<option></option>") // Yes you can do this.
+                                                          .text(item.name)
+                                                          .val(item.id)
+                                                        );
+                                                      }
+                                                    });
+                                                  });
+
+                                                  var id = button.data('id');
+                                                  var name = button.data('name');
+
+                                                  var modal = $(this);
+                                                  modal.find('#id').attr('value', id);
+                                                  modal.find('#name').attr('value', name);
+                                                });
+
+
+                                                $('#modal-delete-city').on('show.bs.modal', function (event) {
+                                                  $('#form-delete-city')[0].reset();
+                                                  var button = $(event.relatedTarget);
+                                                  var id = button.data('id');
+                                                  var name = button.data('name');
+
+
+                                                  var modal = $(this);
+                                                  modal.find('#id').attr('value', id);
+                                                  modal.find('#name').text(name);
+                                                });
+
+                                                $("#form-edit-city").submit(function(event) {
+                                                  event.preventDefault();
+                                                  $.ajax(
+                                                    {
+                                                      type: 'POST',
+                                                      url:  "{{ url('api/cities/edit') }}",
+                                                      data: $('#form-edit-city').serialize(),
+                                                      success: function(response)
+                                                      {
+                                                        $('#modal-edit-city').modal('toggle');
+                                                        if(response.status == 200){
+                                                          $('#form-edit-city')[0].reset();
+                                                          $('#zero-config').DataTable().ajax.reload();
+                                                          swal({
+                                                            title: 'OK!',
+                                                            text: "Atualizado com sucesso!",
+                                                            type: 'success',
+                                                            padding: '2em'
+                                                          })
+                                                        }else {
+                                                          swal({
+                                                            title: 'Erro!',
+                                                            text: "Tente novamente!",
+                                                            type: 'error',
+                                                            padding: '2em'
+                                                          })
+                                                        }
+                                                      },
+                                                      error: function()
+                                                      {
+                                                        swal({
+                                                          title: 'Erro!',
+                                                          text: "Tente novamente!",
+                                                          type: 'error',
+                                                          padding: '2em'
+                                                        })
+                                                      }
+                                                    });
+
+                                                  });
+
+                                                  $("#form-new-city").submit(function(event) {
+                                                    event.preventDefault();
+                                                    $.ajax(
+                                                      {
+                                                        type: 'POST',
+                                                        url:  "{{ url('api/cities/new') }}",
+                                                        data: $('#form-new-city').serialize(),
+                                                        success: function(response)
+                                                        {
+                                                          $('#modal-new-city').modal('toggle');
+                                                          if(response.status == 200){
+                                                            $('#form-new-city')[0].reset();
+                                                            $('#zero-config').DataTable().ajax.reload();
+                                                            swal({
+                                                              title: 'OK!',
+                                                              text: "Adicionado com sucesso!",
+                                                              type: 'success',
+                                                              padding: '2em'
+                                                            })
+                                                          }else {
+                                                            swal({
+                                                              title: 'Erro!',
+                                                              text: "Tente novamente!",
+                                                              type: 'error',
+                                                              padding: '2em'
+                                                            })
+                                                          }
+                                                        },
+                                                        error: function()
+                                                        {
+                                                          swal({
+                                                            title: 'Erro!',
+                                                            text: "Tente novamente!",
+                                                            type: 'error',
+                                                            padding: '2em'
+                                                          })
+                                                        }
+                                                      });
+
+                                                    });
+
+                                                    $("#form-delete-city").submit(function(event) {
+                                                      event.preventDefault();
+                                                      $.ajax(
+                                                        {
+                                                          type: 'POST',
+                                                          url:  "{{ url('api/cities/delete') }}",
+                                                          data: $('#form-delete-city').serialize(),
+                                                          success: function(response)
+                                                          {
+                                                            $('#modal-delete-city').modal('toggle');
+                                                            if(response.status == 200){
+                                                              $('#form-delete-city')[0].reset();
+                                                              $('#zero-config').DataTable().ajax.reload();
+                                                              swal({
+                                                                title: 'OK!',
+                                                                text: "Deletado com sucesso!",
+                                                                type: 'success',
+                                                                padding: '2em'
+                                                              })
+                                                            }else {
+                                                              swal({
+                                                                title: 'Erro!',
+                                                                text: "Tente novamente!",
+                                                                type: 'error',
+                                                                padding: '2em'
+                                                              })
+                                                            }
+                                                          },
+                                                          error: function()
+                                                          {
+                                                            swal({
+                                                              title: 'Erro!',
+                                                              text: "Tente novamente!",
+                                                              type: 'error',
+                                                              padding: '2em'
+                                                            })
+                                                          }
+                                                        });
+
+                                                      });
+
+                                                    });
+                                                    </script>
+                                                    {{-- Forms Bootstrap Select --}}
+                                                    <script src="{{asset('assets/js/scrollspyNav.js')}}"></script>
+                                                    <script src="{{asset('plugins/bootstrap-select/bootstrap-select.min.js')}}"></script>
+                                                    @break
+
+                                                    @case('geral-settings')
+                                                    {{-- User Account Setting  --}}
+                                                    <script src="{{asset('plugins/dropify/dropify.min.js')}}"></script>
+                                                    <script src="{{asset('plugins/blockui/jquery.blockUI.min.js')}}"></script>
+                                                    <script src="{{asset('assets/js/users/account-settings.js')}}"></script>
+
+                                                    <script>
+                                                    @isset($settings)
+                                                    var server_cdn = {{$settings->server_cdn}};
+                                                    @endisset
+                                                    $("#server_cdn option").remove();
+                                                    $.getJSON("{{url('api/get_servers')}}", null, function(data) {
+                                                      $.each(data.servers, function(index, item) {
+                                                        if(item.id == server_cdn){
+                                                          $("#server_cdn").append(
+                                                            $("<option selected='true'></option>")
+                                                            .text(item.server_name)
+                                                            .val(item.id)
+                                                          );
+                                                        }else {
+                                                          $("#server_cdn").append(
+                                                            $("<option></option>")
+                                                            .text(item.server_name)
+                                                            .val(item.id)
+                                                          );
+                                                        }
+                                                      });
+                                                    });
+
+                                                    $("#form-settings").submit(function(event) {
+                                                      event.preventDefault();
+                                                      $.ajax(
+                                                        {
+                                                          type: 'POST',
+                                                          url:  "{{ url('api/configuracoes/salvar') }}",
+                                                          data: $('#form-settings').serialize(),
+                                                          success: function(response)
+                                                          {
+                                                            $('#modal-settings').modal('toggle');
+                                                            if(response.status == 200){
+                                                              $('#form-settings')[0].reset();
+                                                              swal({
+                                                                title: 'OK!',
+                                                                text: "Salvo com sucesso!",
+                                                                type: 'success',
+                                                                padding: '2em'
+                                                              })
+                                                              location.reload();
+                                                            }else {
+                                                              swal({
+                                                                title: 'Erro!',
+                                                                text: "Tente novamente!",
+                                                                type: 'error',
+                                                                padding: '2em'
+                                                              })
+                                                            }
+                                                          },
+                                                          error: function()
+                                                          {
+                                                            swal({
+                                                              title: 'Erro!',
+                                                              text: "Tente novamente!",
+                                                              type: 'error',
+                                                              padding: '2em'
+                                                            })
+                                                          }
+                                                        });
+
+                                                      });
+
+                                                      </script>
+
+                                                      @break
+                                                      @default
+                                                      <script>console.log('No custom script available.')</script>
+                                                    @endswitch
+                                                    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->

@@ -17,8 +17,8 @@
                     <div class="float-right">
                       <a href="#"
                       data-toggle="modal"
-                      data-target="#modal-new-user"
-                      class="btn btn-primary mb-3">Adicionar Administrador</a>
+                      data-target="#modal-new-city"
+                      class="btn btn-primary mb-3">Adicionar</a>
                     </div>
                   </div>
 
@@ -28,24 +28,10 @@
                 <tr>
                   <th>ID</th>
                   <th>Nome</th>
-                  <th>Email</th>
-                  <th>Status</th>
-                  <th>Data de Cadastro</th>
+                  <th>Sigla</th>
                   <th>Ações</th>
                 </tr>
               </thead>
-              <tbody>
-                {{-- <tr>
-                  <td>Garrett Winters</td>
-                  <td>Accountant</td>
-                  <td>Tokyo</td>
-                  <td>63</td>
-                  <td>2011/07/25</td>
-                  <td><a class="btn btn-outline-success"><strong>Ativar CDN</strong></a></td>
-                  <td><a class="btn btn-outline-primary"><strong>Editar Usuário</strong></a></td>
-                  <td><a class="btn btn-outline-primary"><strong>Excluir Usuário</strong></a></td>
-                </tr> --}}
-              </tbody>
             </table>
           </div>
         </div>
