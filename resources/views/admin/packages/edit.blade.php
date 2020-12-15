@@ -2,7 +2,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitle">Editar Pacote para Revendedor</h5>
+        <h5 class="modal-title" id="exampleModalCenterTitle">Editar Pacote</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
@@ -21,14 +21,14 @@
           </div>
           <div class="form-group mb-4">
             <label for="formGroupExampleInput">Status</label><br>
-            <select name="status" id="status" class="selectpicker">
+            <select name="status" id="status" class="form-control mb-4">
               <option value="1">Ativado</option>
               <option value="0">Desativado</option>
             </select>
           </div>
           <div class="form-group mb-4">
-            <label for="formGroupExampleInput">Duração</label>
-            <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Quantidade de Créditos">
+            <label for="formGroupExampleInput">Duração em Dias</label>
+            <input type="text" class="form-control" id="duration" name="duration" placeholder="Duração em Dias">
           </div>
           <div class="form-group">
             <label for="formGroupExampleInput">Valor do Pacote</label>

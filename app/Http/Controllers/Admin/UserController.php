@@ -581,11 +581,9 @@ class UserController extends Controller
   }
 
   public function store(Request $request){
-    $user = null;
     $validation = Validator::make($request->all(), [
       'email' => 'required',
       'cellphone'  => 'required',
-      'password'  => 'required|min:8',
       'name' => 'required',
       'role' => 'required',
     ]);
@@ -598,67 +596,19 @@ class UserController extends Controller
         'message' => 'Error! Dados inválidos.',
       ]);
     }
-    $current = new Carbon();
-    $username = explode('@', $request->input('email'));
 
-    $expire_date = strtotime('+ 4 hours');
-    $max_connections = 1;
-
-    $access_output = array(
-      1,
-      2,
-      3,
-    );
-
-    $package = Packages::findOrFail($request->input('package_id'));
-    $bouquets_id = explode(',', $package);
-
-    $content = http_build_query(array(
-      'api_key' => '97F7XKtacSYxPWV7eDZstH2CVzzmggzp',
-      'action' => 'user',
-      'sub' => 'reg',
-      'username' =>  $username[0],
-      'password' =>  $request->input('password'),
-      'member_id' => 1,
-      'max_connections' => $max_connections,
-      'exp_date' => $expire_date,
-      'force_server_id' => 0,
-      'mac_address_mag' => '',
-      'mac_address_e2' => '',
-      'access_output' => $access_output,
-      'bouquets_selected' => json_encode($bouquets_id),
-    ));
-
-    $context_options = array (
-      'http' => array (
-        'method' => 'POST',
-        'header'=> "Content-type: application/x-www-form-urlencoded\r\n"
-        . "Content-Length: " . strlen($content) . "\r\n",
-        'content' => $content
-      )
-    );
-
-
-    $context = stream_context_create($context_options);
-    $result = json_decode(file_get_contents('http://main.queroassistir.tv:25500/iptv_api.php', null, $context));
-
-    if($result->result != 0 || $result->data == null) {
-      return response()->json([
-        'status' => 500,
-        'message' => 'Erro! Falha ao estabelecer conexão com o servidor de IPTV.',
-      ]);
-    }
     try {
       $user =  User::create([
-        'name' => $request->input('name'),
-        'package_id' => $request->input('package_id'),
-        'package_valid_until' => $current->addHour(4),
         'email' =>  $request->input('email'),
+        'password' => Hash::make($request->input('email')),
+        'name' => $request->input('name'),
+        'city_id' => $request->input('city_id'),
+        'package_id' => $request->input('package_id'),
         'role' => $request->input('role'),
-        // 'is_reseller' => 0,
-        // 'iptv_password' => $result->data->password,
+        'gender' => $requst->input('gender'),
+        'cpf' => $request->input('cpf'),
+        'status' => 1,
         'cellphone' => $request->input('cellphone'),
-        'password' => Hash::make($request->input('password')),
       ]);
     } catch (Exception $e) {
       return response()->json([

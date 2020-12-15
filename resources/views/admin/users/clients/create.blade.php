@@ -1,8 +1,8 @@
 <div class="modal fade" id="modal-new-user" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitle">Novo Usuário</h5>
+        <h5 class="modal-title" id="exampleModalCenterTitle">Novo Cliente</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
@@ -12,11 +12,14 @@
           @csrf
           <div class="form-group mb-4">
             <label for="formGroupExampleInput">Nome</label>
-            <input type="text" class="form-control" id="name" name="name" placeholder="Nome do Usuário">
+            <input type="text" class="form-control" id="name" name="name" placeholder="Nome">
           </div>
-          <div class="form-group mb-4">
-            <label for="formGroupExampleInput">Senha</label>
-            <input type="password" class="form-control" name="password" id="password" placeholder="Senha">
+          <div class="form-group mb-2">
+            <label for="formGroupExampleInput">Sexo</label>
+            <select id="gender" name="gender" class="form-control mb-4">
+              <option value="M">Masculino</option>
+              <option value="F">Feminino</option>
+            </select>
           </div>
           <div class="form-group mb-4">
             <label for="formGroupExampleInput">Email</label>
@@ -28,14 +31,25 @@
           </div>
           <div class="form-group mb-2">
             <label for="formGroupExampleInput">Tipo de Usuário</label>
-            <select name="role" id="role" class="form-control mb-4">
-              <option value="0" selected="selected">Cliente</option>
-              <option value="2">Revendedor</option>
-              <option value="1">Administrador</option>
+            <select id="role" name="role" class="form-control mb-4">
+              <option value="0">Cliente</option>
+              <option value="1">Funcionário</option>
+              <option value="3">Administrador</option>
             </select>
           </div>
           <div class="form-group mb-2">
-            <label for="formGroupExampleInput">Selecione o Pacote</label>
+            <label for="formGroupExampleInput">Estado</label>
+            <select id="state" name="state_id" class="form-control mb-4">
+              <option value="">Selecione uma opção</option>
+            </select>
+          </div>
+          <div id="cities" class="form-group mb-2">
+            <label for="formGroupExampleInput">Cidade</label>
+            <select id="city" name="city_id" class="form-control mb-4">
+            </select>
+          </div>
+          <div class="form-group mb-2">
+            <label for="formGroupExampleInput">Pacote</label>
             <select id="package" name="package_id" class="form-control mb-4">
               <option value="">Selecione uma opção</option>
             </select>

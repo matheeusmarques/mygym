@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\State;
+use App\City;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 use Auth;
@@ -30,6 +32,28 @@ class StateController extends Controller
   public function create()
   {
     //
+  }
+
+  public function get_states_and_cities(){
+    $data = DB::table('cities')
+    ->rightJoin('states', 'states.id', '=', 'cities.id')
+    ->get();
+
+    echo '<pre>';
+    print_r($data);
+    echo '</pre>';
+  }
+
+  public function get_cities_from_state($id){
+    $cities = DB::table('cities')
+    ->where('state_id', '=', $id)
+    ->orderBy('name', 'ASC')->get();
+
+    $cities_array = array(
+      'status' => '200',
+      'cities' => $cities,
+    );
+    return response()->json($cities_array);
   }
 
   public function get_data(){
@@ -156,7 +180,7 @@ class StateController extends Controller
     {
       return response()->json([
         'status' => 400,
-        'message' => 'Error! Preencha todos os campos.',
+        'message' => 'Erro! Preencha todos os campos.',
       ]);
     }
     try {
@@ -170,7 +194,7 @@ class StateController extends Controller
       ]);
     } catch (Exception $e) {
       return response()->json([
-        'status' => 400,
+        'status' => 500,
         'message' => $e->getMessage(),
       ]);
     }

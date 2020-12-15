@@ -33,6 +33,21 @@
   <link href="{{asset('assets/css/dashboard/dash_1.css')}}" rel="stylesheet" type="text/css" />
   @break
 
+
+  @case('clients-packages')
+  {{-- Table Datatable Basic Light --}}
+  {{-- Table Datatable Basic --}}
+  <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
+  <link href="{{asset('assets/css/scrollspyNav.css')}}" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="{{asset('plugins/bootstrap-select/bootstrap-select.min.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/dt-global_style.css')}}">
+  <link href="{{asset('plugins/animate/animate.css')}}" rel="stylesheet" type="text/css" />
+  <link href="{{asset('assets/css/scrollspyNav.css')}}" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="{{asset('plugins/select2/select2.min.css')}}">
+  <link href="{{asset('assets/css/components/custom-modal.css')}}" rel="stylesheet" type="text/css" />
+  @break
+
+
   @case('calendar')
   {{-- App Calendar --}}
   <link href="{{asset('plugins/fullcalendar/fullcalendar.css')}}" rel="stylesheet" type="text/css" />

@@ -123,21 +123,6 @@ Route::group( ['middleware' => ['auth', 'admin']], function(){
       return view('admin/users/clients/index_inactive')->with($data);
     });
 
-    Route::get('/revendedores/masters', function() {
-      // $category_name = '';
-      $data = [
-        'category_name' => 'resellers',
-        'page_name' => 'master-resellers',
-        'username' => Auth::user()->name,
-        'role' => Auth::user()->role,
-        'has_scrollspy' => 0,
-        'scrollspy_offset' => '',
-        'alt_menu' => 0,
-      ];
-      // $pageName = 'analytics';
-      return view('admin/users/resellers/index')->with($data);
-    });
-
     Route::get('/administradores', function() {
       // $category_name = '';
       $data = [
@@ -153,7 +138,7 @@ Route::group( ['middleware' => ['auth', 'admin']], function(){
       return view('admin/users/admin/index')->with($data);
     });
 
-    Route::get('/pacotes/clientes', function() {
+    Route::get('/pacotes', function() {
       // $category_name = '';
       $data = [
         'category_name' => 'clients-packages',
@@ -165,22 +150,7 @@ Route::group( ['middleware' => ['auth', 'admin']], function(){
         'alt_menu' => 0,
       ];
       // $pageName = 'analytics';
-      return view('admin/packages/clients')->with($data);
-    });
-
-    Route::get('/pacotes/revenda', function() {
-      // $category_name = '';
-      $data = [
-        'category_name' => 'resell-packages',
-        'page_name' => 'resell-packages',
-        'username' => Auth::user()->name,
-        'role' => Auth::user()->role,
-        'has_scrollspy' => 0,
-        'scrollspy_offset' => '',
-        'alt_menu' => 0,
-      ];
-      // $pageName = 'analytics';
-      return view('admin/packages/resell')->with($data);
+      return view('admin/packages/index')->with($data);
     });
 
 
@@ -279,10 +249,13 @@ Route::group( ['middleware' => ['auth', 'admin']], function(){
 
     Route::get('/states/getdata', 'StateController@get_data');
     Route::get('/states/getdatajson', 'StateController@get_data_json');
+    Route::get('/states/{id}', 'StateController@get_cities_from_state');
 
     Route::post('/states/edit', 'StateController@edit');
     Route::post('/states/delete', 'StateController@delete');
     Route::post('/states/new', 'StateController@store');
+
+    Route::get('/cities/teste', 'CityController@get_states_and_cities');
 
     Route::get('/cities/getdata', 'CityController@get_data');
     Route::get('/cities/getdatajson', 'CityController@get_data_json');
@@ -292,10 +265,10 @@ Route::group( ['middleware' => ['auth', 'admin']], function(){
     Route::post('/cities/new', 'CityController@store');
 
 
-    Route::post('/usuario/novo', 'UserController@store');
+    Route::post('/user/new', 'UserController@store');
 
+    Route::post('/customer/new', 'UserController@edit');
     Route::post('/clientes/editar', 'UserController@edit');
-    Route::post('/clientes/cdn', 'UserController@cdn');
 
     Route::post('/clientes/gerarfatura', 'InvoicesController@generate_invoice');
     Route::post('/clientes/aprovarfatura', 'InvoicesController@approve_invoice');
@@ -304,40 +277,19 @@ Route::group( ['middleware' => ['auth', 'admin']], function(){
     Route::get('/clientes/getdataactive', 'UserController@get_data_active');
     Route::get('/clientes/getdatainactive', 'UserController@get_data_inactive');
 
-    Route::post('/revendedores/novo', 'UserController@store');
-
-    Route::post('/revendedores/editar', 'UserController@edit');
-
-    Route::post('/revendedores/master/gerarfatura', 'InvoicesController@generate_invoice_reseller');
-    Route::post('/revendedores/master/aprovarfatura', 'InvoicesController@approve_invoice_reseller');
-
-    Route::post('/revendedores/masters/novo', 'UserController@store_master');
-    Route::post('/revendedores/masters/editar', 'UserController@edit_master');
-    Route::post('/revendedores/masters/editarcreditos', 'UserController@add_credits');
-
-    Route::get('/revendedores/masters/getdata', 'UserController@get_data_resellers_masters');
-    Route::get('/revendedores/masters/getdataactive', 'UserController@get_data_active_resellers');
-    Route::get('/revendedores/getdatainactive', 'UserController@get_data_inactive_resellers');
-
 
     Route::post('/administradores/novo', 'UserController@store_admin');
     Route::post('/administradores/editar', 'UserController@edit_admin');
 
     Route::get('/administradores/getdata', 'UserController@get_data_admins');
 
-    Route::post('/pacotes/revenda/novo', 'PackagesController@store_reseller');
-    Route::post('/pacotes/revenda/editar', 'PackagesController@edit_reseller');
-    Route::post('/pacotes/revenda/deletar', 'PackagesController@delete');
 
-    Route::get('/pacotes/revenda/getdatajson', 'PackagesController@get_data_json_resellers');
-    Route::get('/pacotes/revenda/getdata', 'PackagesController@get_data_reseller');
+    Route::post('/packages/clients/new', 'PackageController@store');
+    Route::post('/packages/clients/edit', 'PackageController@edit');
+    Route::post('/packages/clients/delete', 'PackageController@delete');
 
-    Route::post('/pacotes/clientes/novo', 'PackagesController@store');
-    Route::post('/pacotes/clientes/editar', 'PackagesController@edit');
-    Route::post('/pacotes/clientes/deletar', 'PackagesController@delete');
-
-    Route::get('/pacotes/clientes/getdatajson', 'PackagesController@get_data_json');
-    Route::get('/pacotes/clientes/getdata', 'PackagesController@get_data');
+    Route::get('/packages/clients/getdatajson', 'PackageController@get_data_json');
+    Route::get('/packages/clients/getdata', 'PackageController@get_data');
 
     Route::get('/faturas/getdataclients', 'InvoicesController@get_data_clients');
     Route::get('/faturas/getdataresellers', 'InvoicesController@get_data_resellers');
@@ -347,26 +299,26 @@ Route::group( ['middleware' => ['auth', 'admin']], function(){
 
 });
 
-Route::group( ['middleware' => ['auth', 'reseller']], function(){
-  Route::namespace('Reseller')->prefix('api/masters/')->as('reseller.')->middleware('auth')->group(function(){
-    Route::get('/get_bouquets', 'APIController@get_bouquets');
-
-    Route::post('/clientes/novo', 'UserController@store');
-
-    Route::post('/clientes/editar', 'UserController@edit');
-    Route::post('/clientes/cdn', 'UserController@cdn');
-
-    Route::post('/clientes/gerarfatura', 'InvoicesController@generate_invoice');
-    Route::post('/clientes/aprovarfatura', 'InvoicesController@approve_invoice');
-
-    Route::get('/clientes/getdata', 'UserController@get_data');
-    Route::get('/clientes/getdataactive', 'UserController@get_data_active');
-    Route::get('/clientes/getdatainactive', 'UserController@get_data_inactive');
-
-    Route::get('/pacotes/clientes/getdatajson', 'PackagesController@get_data_json');
-    Route::get('/pacotes/clientes/getdata', 'PackagesController@get_data');
-
-    Route::post('/configuracoes/salvar', 'SettingsController@store');
-  });
-
-});
+// Route::group( ['middleware' => ['auth', 'reseller']], function(){
+//   Route::namespace('Reseller')->prefix('api/masters/')->as('reseller.')->middleware('auth')->group(function(){
+//     Route::get('/get_bouquets', 'APIController@get_bouquets');
+//
+//     Route::post('/clientes/novo', 'UserController@store');
+//
+//     Route::post('/clientes/editar', 'UserController@edit');
+//     Route::post('/clientes/cdn', 'UserController@cdn');
+//
+//     Route::post('/clientes/gerarfatura', 'InvoicesController@generate_invoice');
+//     Route::post('/clientes/aprovarfatura', 'InvoicesController@approve_invoice');
+//
+//     Route::get('/clientes/getdata', 'UserController@get_data');
+//     Route::get('/clientes/getdataactive', 'UserController@get_data_active');
+//     Route::get('/clientes/getdatainactive', 'UserController@get_data_inactive');
+//
+//     Route::get('/pacotes/clientes/getdatajson', 'PackagesController@get_data_json');
+//     Route::get('/pacotes/clientes/getdata', 'PackagesController@get_data');
+//
+//     Route::post('/configuracoes/salvar', 'SettingsController@store');
+//   });
+//
+// });
