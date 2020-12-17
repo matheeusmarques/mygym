@@ -11,13 +11,13 @@
           <h6 class="">{{$username}}</h6>
           <p class="">@php
           if($role == 1){
-            echo 'Administrador';
+            echo 'Funcionário';
           }elseif($role == 0){
             echo 'Cliente';
           }elseif($role == 2){
-            echo 'Revendedor Master';
+            echo '';
           }elseif($role == 3){
-            echo 'Revendedor';
+            echo 'Administrador';
           }
           @endphp</p>
         </div>

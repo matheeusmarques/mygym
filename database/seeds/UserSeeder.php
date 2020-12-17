@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
       'email' => 'matheeus.marques@live.com',
       'password' => Hash::make('marques1234'),
       'city_id' => 1,
+      'package_id' => 1,
       'birthday' => '12111998',
       'cellphone' => '44991586117',
       'role' => 3,

@@ -31,7 +31,8 @@
                   <th>Descrição</th>
                   <th>Duração</th>
                   <th>Preço</th>
-                  <th class="no-content"></th>
+                  <th>Status</th>
+                  <th>Ações</th>
                   <th class="no-content"></th>
                 </tr>
               </thead>

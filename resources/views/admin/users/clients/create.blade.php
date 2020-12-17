@@ -26,16 +26,12 @@
             <input type="email" class="form-control" id="email" name="email" placeholder="E-mail">
           </div>
           <div class="form-group mb-4">
-            <label for="formGroupExampleInput">Celular</label>
-            <input type="text" class="form-control" id="cellphone" name="cellphone" placeholder="Celular">
+            <label for="formGroupExampleInput">Nascimento</label>
+            <input type="text" class="form-control" id="birthday" name="birthday" placeholder="Data de Nascimento">
           </div>
-          <div class="form-group mb-2">
-            <label for="formGroupExampleInput">Tipo de Usuário</label>
-            <select id="role" name="role" class="form-control mb-4">
-              <option value="0">Cliente</option>
-              <option value="1">Funcionário</option>
-              <option value="3">Administrador</option>
-            </select>
+          <div class="form-group mb-4">
+            <label for="formGroupExampleInput">Celular</label>
+            <input type="text" class="form-control" id="cellphone" name="cellphone" placeholder="Número do Celular">
           </div>
           <div class="form-group mb-2">
             <label for="formGroupExampleInput">Estado</label>

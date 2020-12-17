@@ -29,6 +29,7 @@
                   <th>ID</th>
                   <th>Nome</th>
                   <th>Email</th>
+                  <th>Pacote</th>
                   <th>Status</th>
                   <th>Data de Cadastro</th>
                   <th>Data de Vencimento</th>

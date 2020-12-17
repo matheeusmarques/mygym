@@ -11,7 +11,7 @@
         <form method="POST" id="form-generate-invoice">
           @csrf
           <div class="form-group">
-            <input type="hidden" class="form-control" id="id" name="id">
+            <input type="hidden" class="form-control" id="user_id" name="user_id">
             <div class="form-group mb-2">
               <label for="formGroupExampleInput">Selecione o Pacote</label>
               <select id="package_invoice" name="package_id" class="form-control mb-4">

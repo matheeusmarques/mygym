@@ -243,34 +243,34 @@ Route::group( ['middleware' => ['auth', 'reseller']], function(){
 
 
 Route::group( ['middleware' => ['auth', 'admin']], function(){
-  Route::namespace('Admin')->prefix('api/')->as('admin.')->middleware('auth')->group(function(){
+  Route::namespace('Admin')->prefix('api/admin/')->as('admin.')->middleware('auth')->group(function(){
     Route::get('/get_bouquets', 'APIController@get_bouquets');
     Route::get('/get_servers', 'APIController@get_servers');
 
-    Route::get('/states/getdata', 'StateController@get_data');
-    Route::get('/states/getdatajson', 'StateController@get_data_json');
-    Route::get('/states/{id}', 'StateController@get_cities_from_state');
+    Route::get('/estados/getdata', 'StateController@get_data');
+    Route::get('/estados/getdatajson', 'StateController@get_data_json');
+    Route::get('/estados/{id}', 'StateController@get_cities_from_state');
 
-    Route::post('/states/edit', 'StateController@edit');
-    Route::post('/states/delete', 'StateController@delete');
-    Route::post('/states/new', 'StateController@store');
+    Route::post('/estados/editar', 'StateController@edit');
+    Route::post('/estados/deletar', 'StateController@delete');
+    Route::post('/estados/criar', 'StateController@store');
 
-    Route::get('/cities/teste', 'CityController@get_states_and_cities');
+    Route::get('/cidades/teste', 'CityController@get_states_and_cities');
 
-    Route::get('/cities/getdata', 'CityController@get_data');
-    Route::get('/cities/getdatajson', 'CityController@get_data_json');
+    Route::get('/cidades/getdata', 'CityController@get_data');
+    Route::get('/cidades/getdatajson', 'CityController@get_data_json');
 
-    Route::post('/cities/edit', 'CityController@edit');
-    Route::post('/cities/delete', 'CityController@delete');
-    Route::post('/cities/new', 'CityController@store');
+    Route::post('/cidades/editar', 'CityController@edit');
+    Route::post('/cidades/deletar', 'CityController@delete');
+    Route::post('/cidades/criar', 'CityController@store');
 
 
-    Route::post('/user/new', 'UserController@store');
+    Route::post('/customer/new', 'UserController@store');
 
-    Route::post('/customer/new', 'UserController@edit');
+    // Route::post('/customer/new', 'UserController@edit');
     Route::post('/clientes/editar', 'UserController@edit');
 
-    Route::post('/clientes/gerarfatura', 'InvoicesController@generate_invoice');
+    Route::post('/clientes/gerarfatura', 'InvoiceController@generate_invoice');
     Route::post('/clientes/aprovarfatura', 'InvoicesController@approve_invoice');
 
     Route::get('/clientes/getdata', 'UserController@get_data');
@@ -284,12 +284,12 @@ Route::group( ['middleware' => ['auth', 'admin']], function(){
     Route::get('/administradores/getdata', 'UserController@get_data_admins');
 
 
-    Route::post('/packages/clients/new', 'PackageController@store');
-    Route::post('/packages/clients/edit', 'PackageController@edit');
-    Route::post('/packages/clients/delete', 'PackageController@delete');
+    Route::post('/pacotes/criar', 'PackageController@store');
+    Route::post('/pacotes/editar', 'PackageController@edit');
+    Route::post('/pacotes/deletar', 'PackageController@delete');
 
-    Route::get('/packages/clients/getdatajson', 'PackageController@get_data_json');
-    Route::get('/packages/clients/getdata', 'PackageController@get_data');
+    Route::get('/pacotes/getdatajson', 'PackageController@get_data_json');
+    Route::get('/pacotes/getdata', 'PackageController@get_data');
 
     Route::get('/faturas/getdataclients', 'InvoicesController@get_data_clients');
     Route::get('/faturas/getdataresellers', 'InvoicesController@get_data_resellers');

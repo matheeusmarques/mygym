@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\User;
-use App\Packages;
+use App\Package;
 use App\Settings;
 use App\Http\Controllers\Controller;
 
@@ -37,27 +37,6 @@ class UserController extends Controller
     return view('dashboard2');
   }
 
-  public function cdn(Request $request){
-    $settings = Settings::orderBy('created_at', 'desc')->first();
-    $user = User::findOrFail($request->input('id'));
-    $username = explode('@', $user->email);
-
-    if($user->is_cdn_active == 1){
-      $json = json_decode(file_get_contents('http://main.queroassistir.tv:25500/qatv_test.php?key=F8EBD133C14FE318BE82F421B99A6&action=disable_force_connection&username='.$username[0].'&server_id='.$settings->server_cdn));
-      $user->is_cdn_active = 0;
-    }else {
-      $json = json_decode(file_get_contents('http://main.queroassistir.tv:25500/qatv_test.php?key=F8EBD133C14FE318BE82F421B99A6&action=force_connection&username='.$username[0].'&server_id='.$settings->server_cdn));
-      $user->is_cdn_active = 1;
-    }
-
-    $user->save();
-
-    return response()->json([
-      'status' => $json->status,
-      'message' => $json->message,
-    ]);
-  }
-
   public function get_data(){
     $user = User::all()->where('role' , '0');
     return datatables()->of($user)
@@ -68,25 +47,6 @@ class UserController extends Controller
       $button .= '<button href="https://wa.me/55'.$user->cellphone.'"
       type="button" target="_blank" name="delete" class="btn btn-info mb-2">Enviar SMS</button>';
       $button .= '&nbsp;&nbsp;';
-      if($user->is_cdn_active == '0'){
-        $button .= '<button href="#"
-        data-id="'.$user->id.'"
-        data-toggle="modal"
-        data-target="#modal-cdn"
-        data-is_cdn_active="'.$user->is_cdn_active.'"
-        data-email="'.$user->email.'"
-        type="button" name="delete" class="delete btn btn-success mb-2">Ativar CDN</button>';
-        $button .= '&nbsp;&nbsp;';
-      }else {
-        $button .= '<button href="#"
-        data-is_cdn_active="'.$user->is_cdn_active.'"
-        data-id="'.$user->id.'"
-        data-email="'.$user->email.'"
-        data-toggle="modal"
-        data-target="#modal-cdn"
-        type="button" name="delete" class="delete btn btn-danger mb-2">Desativar CDN</button>';
-        $button .= '&nbsp;&nbsp;';
-      }
       $button .= '<button data-toggle="modal"
       data-target="#modal-generate-invoice"
       data-id="'.$user->id.'"
@@ -102,8 +62,8 @@ class UserController extends Controller
       data-role="'.$user->role.'"
       data-package_id="'.$user->package_id.'"
       data-cellphone="'.$user->cellphone.'"
+      data-birthday="'.$user->birthday.'"
       data-status="'.$user->status.'"
-      data-is_trial="'.$user->is_trial.'"
       data-name="'.$user->name.'"
       name="edit" id="'.$user->id.'" class="edit btn btn-primary mb-2">Editar</button>';
       $button .= '&nbsp;&nbsp;';
@@ -118,7 +78,6 @@ class UserController extends Controller
       return $button;
     })
     ->editColumn('package_id', function (User $user) {
-      $package = Packages::where('id', $user->package_id)->firstOrFail();
       return $user->package->name;
     })
     ->editColumn('status', function (User $user) {
@@ -349,25 +308,6 @@ class UserController extends Controller
       $button .= '<button href="https://wa.me/55'.$user->cellphone.'"
       type="button" target="_blank" name="delete" class="btn btn-info mb-2">Enviar SMS</button>';
       $button .= '&nbsp;&nbsp;';
-      if($user->is_cdn_active == '0'){
-        $button .= '<button href="#"
-        data-id="'.$user->id.'"
-        data-toggle="modal"
-        data-target="#modal-cdn"
-        data-is_cdn_active="'.$user->is_cdn_active.'"
-        data-email="'.$user->email.'"
-        type="button" name="delete" class="delete btn btn-success mb-2">Ativar CDN</button>';
-        $button .= '&nbsp;&nbsp;';
-      }else {
-        $button .= '<button href="#"
-        data-is_cdn_active="'.$user->is_cdn_active.'"
-        data-id="'.$user->id.'"
-        data-email="'.$user->email.'"
-        data-toggle="modal"
-        data-target="#modal-cdn"
-        type="button" name="delete" class="delete btn btn-danger mb-2">Desativar CDN</button>';
-        $button .= '&nbsp;&nbsp;';
-      }
       $button .= '<button data-toggle="modal"
       data-target="#modal-generate-invoice"
       data-id="'.$user->id.'"
@@ -473,25 +413,6 @@ class UserController extends Controller
       $button .= '<button href="https://wa.me/55'.$user->cellphone.'"
       type="button" target="_blank" name="delete" class="btn btn-info mb-2">Enviar SMS</button>';
       $button .= '&nbsp;&nbsp;';
-      if($user->is_cdn_active == '0'){
-        $button .= '<button href="#"
-        data-id="'.$user->id.'"
-        data-toggle="modal"
-        data-target="#modal-cdn"
-        data-is_cdn_active="'.$user->is_cdn_active.'"
-        data-email="'.$user->email.'"
-        type="button" name="delete" class="delete btn btn-success mb-2">Ativar CDN</button>';
-        $button .= '&nbsp;&nbsp;';
-      }else {
-        $button .= '<button href="#"
-        data-is_cdn_active="'.$user->is_cdn_active.'"
-        data-id="'.$user->id.'"
-        data-email="'.$user->email.'"
-        data-toggle="modal"
-        data-target="#modal-cdn"
-        type="button" name="delete" class="delete btn btn-danger mb-2">Desativar CDN</button>';
-        $button .= '&nbsp;&nbsp;';
-      }
       $button .= '<button data-toggle="modal"
       data-target="#modal-generate-invoice"
       data-id="'.$user->id.'"
@@ -508,7 +429,6 @@ class UserController extends Controller
       data-package_id="'.$user->package_id.'"
       data-cellphone="'.$user->cellphone.'"
       data-status="'.$user->status.'"
-      data-is_trial="'.$user->is_trial.'"
       data-name="'.$user->name.'"
       name="edit" id="'.$user->id.'" class="edit btn btn-primary mb-2">Editar</button>';
       $button .= '&nbsp;&nbsp;';
@@ -582,38 +502,37 @@ class UserController extends Controller
 
   public function store(Request $request){
     $validation = Validator::make($request->all(), [
-      'email' => 'required',
-      'cellphone'  => 'required',
-      'name' => 'required',
-      'role' => 'required',
+      'email' => 'required|unique:users,email|email',
+      'name' => 'required|min:6',
+      'cellphone'  => 'required|size:11',
+      'birthday'  => 'required|size:8',
     ]);
 
 
     if ($validation->fails())
     {
       return response()->json([
-        'status' => 500,
-        'message' => 'Error! Dados inválidos.',
+        'status' => 400,
+        'message' => 'Erro! Dados inválidos.',
       ]);
     }
 
     try {
       $user =  User::create([
-        'email' =>  $request->input('email'),
-        'password' => Hash::make($request->input('email')),
         'name' => $request->input('name'),
+        'gender' => $request->input('gender'),
+        'email' =>  $request->input('email'),
+        'birthday' => $request->input('birthday'),
+        'cellphone' => $request->input('cellphone'),
         'city_id' => $request->input('city_id'),
         'package_id' => $request->input('package_id'),
-        'role' => $request->input('role'),
-        'gender' => $requst->input('gender'),
-        'cpf' => $request->input('cpf'),
-        'status' => 1,
-        'cellphone' => $request->input('cellphone'),
+        'role' => 0,
+        'password' => Hash::make($request->input('email')),
       ]);
     } catch (Exception $e) {
       return response()->json([
         'status' => 500,
-        'message' => 'Error! User already exist.',
+        'message' => $e->getMessage(),
       ]);
     }
 
@@ -693,19 +612,14 @@ class UserController extends Controller
   {
     $validation = Validator::make($request->all(), [
       'id' => 'required',
-      'name'  => 'required',
-      'role'  => 'required',
-      'package_valid_until'  => 'required',
-      'is_trial' => 'required',
-      'status' => 'required',
     ]);
 
 
     if ($validation->fails())
     {
       return response()->json([
-        'status' => 500,
-        'message' => 'Error! Dados inválidos.',
+        'status' => 400,
+        'message' => 'Erro! Dados inválidos.',
       ]);
     }
 
@@ -713,23 +627,11 @@ class UserController extends Controller
     try {
       $user = User::findOrFail($request->input('id'));
 
-      $time = new Carbon($request->input('package_valid_until'));
-
-      $user->update_validity($time->timestamp);
-
-      if($user == FALSE){
-        return response()->json([
-          'status' => 400,
-          'message' => 'Erro ao atualizar no painel de iptv',
-        ]);
-      }
       $user->name = $request->input('name');
+      $user->birthday = $request->input('birthday');
       $user->cellphone = $request->input('cellphone');
-      // $user->is_trial = $request->input('is_trial');
-      $user->package_valid_until = $request->input('package_valid_until');
-      $user->package_id = $request->input('package_id');
-      $user->is_trial = $request->input('is_trial');
       $user->status = $request->input('status');
+      $user->gender = $request->input('gender');
       $user->role = $request->input('role');
       $user->save();
     } catch (Exception $e) {

@@ -17,8 +17,8 @@ class User extends Authenticatable
   */
   protected $fillable = [
     'name', 'email', 'password', 'role', 'cellphone',
-    'package_id', 'city_id', 'gender', 'cpf', 'birthday'
-    , 'status'
+    'package_id', 'city_id', 'gender', 'birthday',
+    'status', 'package_valid_until'
   ];
 
   /**
@@ -47,6 +47,11 @@ class User extends Authenticatable
   public function city()
   {
     return $this->belongsTo(City::class);
+  }
+
+  public function package()
+  {
+    return $this->belongsTo(Package::class);
   }
 
 }

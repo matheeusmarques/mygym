@@ -141,7 +141,7 @@ class PackageController extends Controller
      * @param  \App\Package  $package
      * @return \Illuminate\Http\Response
      */
-    public function edit(Package $package)
+    public function edit(Request $request)
     {
       $validation = Validator::make($request->all(), [
         'name' => 'required',

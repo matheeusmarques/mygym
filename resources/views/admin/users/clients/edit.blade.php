@@ -1,5 +1,5 @@
 <div class="modal fade" id="modal-edit-user" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalCenterTitle">Editar Usuário</h5>
@@ -20,40 +20,34 @@
             <input type="text" class="form-control" name="name" id="name" placeholder="">
           </div>
           <div class="form-group mb-4">
+            <label for="birthday">Nascimento:</label>
+            <input type="text" minlength="8" maxlength="8" class="form-control" id="birthday" name="birthday">
+          </div>
+          <div class="form-group mb-4">
             <label for="formGroupExampleInput">Celular</label>
             <input type="text" class="form-control" id="cellphone" name="cellphone" placeholder="Celular">
           </div>
           <div class="form-group mb-2">
             <label for="formGroupExampleInput">Tipo de Usuário</label>
-            <select name="role" id="role" class="form-control mb-4">
-              <option value="2">Revendedor</option>
-              <option value="0" selected="selected">Cliente</option>
-              <option value="1">Administrador</option>
+            <select id="role" name="role" class="form-control mb-4">
+              <option value="0">Cliente</option>
+              <option value="1">Funcionário</option>
+              <option value="3">Administrador</option>
             </select>
           </div>
           <div class="form-group mb-2">
-            <label for="formGroupExampleInput">Conta de Testes</label>
-            <select name="is_trial" id="is_trial" class="form-control mb-4">
-              <option value="1">Sim</option>
-              <option value="0">Não</option>
-            </select>
-          </div>
-          <div class="form-group mb-2">
-            <label for="formGroupExampleInput">Selecione o Pacote</label>
-            <select id="package_id" name="package_id" class="form-control mb-4">
-              <option value="">Selecione uma opção</option>
+            <label for="formGroupExampleInput">Sexo</label>
+            <select id="gender" name="gender" class="form-control mb-4">
+              <option value="M">Masculino</option>
+              <option value="F">Feminino</option>
             </select>
           </div>
           <div class="form-group mb-4">
             <label for="formGroupExampleInput">Status</label><br>
-            <select name="status" id="status" class="selectpicker">
+            <select name="status" id="status" class="form-control mb-4">
               <option value="1">Ativado</option>
               <option value="0">Desativado</option>
             </select>
-          </div>
-          <div class="form-group mb-4">
-            <label for="formGroupExampleInput">Vencimento</label>
-            <input type="text" class="form-control" id="package_valid_until" name="package_valid_until" placeholder="Vencimento">
           </div>
         </div>
         <div class="modal-footer">

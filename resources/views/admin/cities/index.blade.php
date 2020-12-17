@@ -30,6 +30,8 @@
                   <th>Nome</th>
                   <th>Sigla</th>
                   <th>Ações</th>
+                  <th class="no-content"></th>
+
                 </tr>
               </thead>
             </table>
